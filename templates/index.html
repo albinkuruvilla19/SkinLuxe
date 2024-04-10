@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<head>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        .img-wrapper img {
+            max-width: 100%;
+            height: auto;
+        }
+        
+       
+    </style>
+</head>
+<body>
+    <section class="py-3"style="background-image: url({% static 'images/background-pattern.jpg' %});
+    background-repeat: no-repeat;background-size: cover;">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+
+          <div class="banner-blocks">
+          
+            <div class="banner-ad large bg-gradient-danger block-1">
+
+              <div class="swiper main-swiper">
+                <div class="swiper-wrapper">
+                  
+                    <div class="swiper-slide">
+                        <div class="row banner-content p-5">
+                            <div class="content-wrapper col-md-7">
+                                <div class="categories my-3">100% natural</div>
+                                <h3 class="display-4">Face Moisturizers</h3>
+                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dignissim massa diam elementum.</p>
+                                <a href="#" class="btn btn-outline-dark btn-lg text-uppercase fs-6 rounded-1 px-4 py-3 mt-3">Shop Now</a>
+                            </div>
+                            <div class="img-wrapper col-md-5">
+                                <img src="{% static 'assets/spfk.png' %}" class="img-fluid">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="swiper-pagination"></div>
+              </div>
+            </div>
+            
+            <div class="banner-ad bg-success-subtle block-2" style="background:url('static/assets/serum.png') no-repeat;background-position:right">
+              <div class="row banner-content p-5">
+
+                <div class="content-wrapper col-md-7">
+                  <div class="categories sale mb-3 pb-3">20% off</div>
+                  <h3 class="banner-title">Face Serums</h3>
+                  <a href="#" class="d-flex align-items-center nav-link">Shop Collection <svg width="24" height="24"><use xlink:href="#arrow-right"></use></svg></a>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="banner-ad bg-info block-3" style="background:url('static/assets/wash.png') no-repeat;background-position: right">
+              <div class="row banner-content p-5">
+
+                <div class="content-wrapper col-md-7">
+                  <div class="categories sale mb-3 pb-3">15% off</div>
+                  <h3 class="item-title">Face Washes</h3>
+                  <a href="#" class="d-flex align-items-center nav-link">Shop Collection <svg width="24" height="24"><use xlink:href="#arrow-right"></use></svg></a>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+          <!-- / Banner Blocks -->
+            
+        </div>
+      </div>
+    </div>
+  </section>
+
+<!-- best sellers -->
+<section class="my-2" style="background-color: white;">
+    <div class="container">
+        <div class="row">
+            <div class="my-5">
+                <div style="display: inline-block;">
+                    <h3>BEST <span style="color: #de9518;font-weight: bolder;">SELLERS</span></h3>
+                </div>
+                <div style="display: inline-block; position: absolute; right: 70px;">
+                    <a style="text-decoration: none; color: #871e09;" href="#">View all</a>
+                </div>
+            </div>
+
+            <div class="row">
+              {% for item in products %}
+              <div class="col-lg-3 col-md-4 mb-5">
+                  <div class="card border-0 rounded-3 shadow">
+                      <img class="card-img-top img-fluid" src="{{ item.image1.url }}" alt="{{ item.ProductName }}" style="max-height: 320px;">
+                      <div class="card-body d-flex flex-column align-items-center">
+                          <a style="text-decoration: none; color: dimgray;" href="{% url 'productsview' item.SubCategoryID item.ProductName %}">
+                              <p class="card-title text-center">{{ item.ProductName }}</p>
+                          </a>
+                          <p class="card-text">
+                              <span style="color: black; font-size: 19px;">Rs. {{ item.selling_price }}</span>
+                              <span style="margin-left: 10px; color: gray;"><s>Rs. {{ item.original_Price }}</s></span>
+                          </p>
+                          <a href="#" class="btn btn-dark mt-auto mx-auto" style="margin-top: 15px;width:100%;font-size: smaller;font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;color: #bdb9b9;">Add to Cart</a>
+                      </div>
+                  </div>
+              </div>
+              {% endfor %}
+          </div>
+          
+
+
+        </div>
+    </div>
+</section>
+
+
+
+  <!-- Swiper JS -->
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+<script>
+    // Initialize Swiper
+    var swiper = new Swiper('.main-swiper', {
+      slidesPerView: 1, // Number of slides per view
+      spaceBetween: 30, // Space between slides (in pixels)
+      loop: true, // Enable loop mode
+      pagination: {
+        el: '.swiper-pagination', // Pagination container
+        clickable: true, // Enable clickable pagination
+      },
+    });
+  </script>
+  
+</body>
+
+
+{% endblock content %}
+
+

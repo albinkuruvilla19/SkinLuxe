@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block title %}Cart{% endblock title %}
+
+{% block content %}
+<div class="container" style="margin-top: 70px; min-height: 600px;">
+    <div class="row">
+        <div class="col-12">
+            <h1>Your Cart</h1>
+        </div>
+    </div>
+
+    {% if cart %}
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Product Name</th>
+                    <th>Unit Price</th>
+                    <th>Quantity</th>
+                    <th>Amount</th>
+                    <th>Update Quantity</th>
+                    <th>Remove</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart %}
+                    <tr>
+                        <td><img src="{{ item.products.image1.url }}" height="75px" alt=""></td>
+                        <td>{{ item.products.ProductName }}</td>
+                        <td>₹{{ item.products.selling_price }}</td>
+                        <td>
+                            <input type="number" min="1" value="{{ item.product_quantity }}" class="quantity-input" data-item-id="{{ item.id }}">
+                        </td>
+                        <td class="amnt">₹{{ item.total_cost }}</td>
+                        <td>
+                            <button class="btn btn-primary btn-sm update-quantity">Update</button>
+                        </td>
+                        <td>
+                            <a href="{% url 'removecart' item.id %}" onclick="return confirm('Are you sure?')">
+                                <button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> Remove</button>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>Total Amount:</td>
+                    <td id="net" colspan="3">₹0.00</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="text-center mt-3">
+            <a href="" class="btn btn-success btn-md">Proceed to Checkout</a>
+        </div>
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            Your cart is empty. <a href="{% url 'index' %}" class="alert-link">Continue shopping</a>.
+        </div>
+    {% endif %}
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        updateTotalAmount();
+
+        const updateButtons = document.querySelectorAll('.update-quantity');
+        updateButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const row = this.closest('tr');
+                const itemId = row.querySelector('.quantity-input').getAttribute('data-item-id');
+                const newQuantity = parseInt(row.querySelector('.quantity-input').value);
+                
+                // Make an AJAX call to update the quantity
+                // For demonstration, let's assume there's an endpoint 'updatequantity' which updates quantity
+                fetch(`/updatequantity/${itemId}/?quantity=${newQuantity}`)
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    throw new Error('Network response was not ok.');
+                })
+                .then(data => {
+                    // Update the total amount
+                    updateTotalAmount();
+                })
+                .then(data => {
+                    // Reload the page to reflect the changes
+                    location.reload();
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                });
+            });
+        });
+
+        function updateTotalAmount() {
+            const nodes = document.querySelectorAll('.amnt');
+            const arr = Array.from(nodes);
+            const res = arr.reduce((acc, curr) => acc + Number(curr.textContent.replace('₹', '')), 0);
+            document.getElementById("net").innerHTML = "₹" + res.toFixed(2);
+        }
+    });
+</script>
+
+{% endblock content %}

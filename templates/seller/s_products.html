@@ -1,0 +1,70 @@
+{% extends "seller/seller_base.html" %}
+{% load static %}
+{% block scontent %}
+
+<style>
+    .card {
+        margin-bottom: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: box-shadow 0.3s ease-in-out;
+    }
+
+    .card:hover {
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-img-top {
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .card-title {
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+
+    .list-group-item {
+        background-color: #f8f9fa;
+        border: none;
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+
+    .card-link {
+        color: #007bff;
+        text-decoration: none;
+        margin-right: 10px;
+        transition: color 0.3s ease-in-out;
+    }
+
+    .card-link:hover {
+        color: #0056b3;
+    }
+</style>
+
+<div class="row">
+    {% for product in products %}
+    <div class="col-md-2">
+        <div class="card" style="max-width:14rem;">
+            <img class="card-img-top" src="{{ product.image1.url }}" alt="Card image cap">
+            <div class="card-body">
+                <h5 class="card-title">{{ product.ProductName }}</h5>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">Stock Quantity: {{ product.StockQuantity }}</li>
+                <li class="list-group-item">Selling Price: ${{ product.selling_price }}</li>
+            </ul>
+            <div class="card-body">
+                <a href="{% url 'editproduct' product.ProductID %}" class="card-link">Edit</a>
+                <a href="{% url 'deleteproduct' product.ProductID %}" class="card-link">Delete</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+
+{% endblock scontent %}

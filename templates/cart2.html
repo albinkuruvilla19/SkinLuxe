@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+{% comment %} <style>
+    body{margin-top:20px;
+}
+h3 {
+    font-size: 16px;
+}
+.text-navy {
+    color: #1ab394;
+}
+.cart-product-imitation {
+  text-align: center;
+  padding-top: 30px;
+  height: 80px;
+  width: 80px;
+  background-color: #f8f8f9;
+}
+.product-imitation.xl {
+  padding: 120px 0;
+}
+.product-desc {
+  padding: 20px;
+  position: relative;
+}
+.ecommerce .tag-list {
+  padding: 0;
+}
+.ecommerce .fa-star {
+  color: #d1dade;
+}
+.ecommerce .fa-star.active {
+  color: #f8ac59;
+}
+.ecommerce .note-editor {
+  border: 1px solid #e7eaec;
+}
+table.shoping-cart-table {
+  margin-bottom: 0;
+}
+table.shoping-cart-table tr td {
+  border: none;
+  text-align: right;
+}
+table.shoping-cart-table tr td.desc,
+table.shoping-cart-table tr td:first-child {
+  text-align: left;
+}
+table.shoping-cart-table tr td:last-child {
+  width: 80px;
+}
+.ibox {
+  clear: both;
+  margin-bottom: 25px;
+  margin-top: 0;
+  padding: 0;
+}
+.ibox.collapsed .ibox-content {
+  display: none;
+}
+.ibox:after,
+.ibox:before {
+  display: table;
+}
+.ibox-title {
+  -moz-border-bottom-colors: none;
+  -moz-border-left-colors: none;
+  -moz-border-right-colors: none;
+  -moz-border-top-colors: none;
+  background-color: #ffffff;
+  border-color: #e7eaec;
+  border-image: none;
+  border-style: solid solid none;
+  border-width: 3px 0 0;
+  color: inherit;
+  margin-bottom: 0;
+  padding: 14px 15px 7px;
+  min-height: 48px;
+}
+.ibox-content {
+  background-color: #ffffff;
+  color: inherit;
+  padding: 15px 20px 20px 20px;
+  border-color: #e7eaec;
+  border-image: none;
+  border-style: solid solid none;
+  border-width: 1px 0;
+}
+.ibox-footer {
+  color: inherit;
+  border-top: 1px solid #e7eaec;
+  font-size: 90%;
+  background: #ffffff;
+  padding: 10px 15px;
+}
+</style> {% endcomment %}
+
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+<div class="container">
+    <div class="row">
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-header">
+                    <span class="float-right">(<strong>5</strong>) items</span>
+                    <h5 class="card-title">Items in your cart</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table shoping-cart-table">
+                            <thead>
+                                <tr>
+                                    <th>Image</th>
+                                    <th>Product Name</th>
+                                    <th>Unit Price</th>
+                                    <th>Quantity</th>
+                                    <th>Amount</th>
+                                    <th>Update Quantity</th>
+                                    <th>Remove</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in cart %}
+                                <tr>
+                                    <td width="90">
+                                        <img src="{{ item.products.image1.url }}" height="75px" alt="">
+                                    </td>
+                                    <td class="desc">
+                                        <h6 class="card-title">
+                                            <a href="#" class="text-dark">
+                                                {{ item.products.ProductName }}
+                                            </a>
+                                        </h6>
+                                        <div class="m-t-sm">
+                                            <a href="#" class="text-muted"><i class="fa fa-trash"></i> Remove item</a>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        ₹{{ item.products.selling_price }}
+                                    </td>
+                                    <td width="65">
+                                        <input type="number" min="1" value="{{ item.product_quantity }}" class="form-control quantity-input" data-item-id="{{ item.id }}">
+                                    </td>
+                                    <td>
+                                        <h6>₹{{ item.total_cost }}</h6>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm update-quantity"><i class="fa fa-refresh"></i> Update</button>
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'removecart' item.id %}" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> Remove</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Cart Summary</h5>
+                </div>
+                <div class="card-body">
+                    <div>
+                        <span>Total</span>
+                        <h5 class="font-weight-bold">₹390.00</h5>
+                        <hr>
+                        <span class="text-muted small">*Applicable sales tax will be applied</span>
+                        <div class="m-t-sm">
+                            <div class="btn-group">
+                                <button class="btn btn-primary btn-sm"><i class="fa fa-shopping-cart"></i> Checkout</button>
+                                <button class="btn btn-white btn-sm"> Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Support</h5>
+                </div>
+                <div class="card-body text-center">
+                    <h5><i class="fa fa-phone"></i> +43 100 783 001</h5>
+                    <p class="small">Please contact us if you have any questions. We are available 24/7.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+  {% endblock content %}
