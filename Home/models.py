@@ -3,6 +3,7 @@ import datetime
 import os
 from django.contrib.auth.models import AbstractUser
 from ckeditor_uploader.fields import RichTextUploadingField
+from django.contrib.auth import get_user_model
 
 def getFileName(request,filename):
     now_time = datetime.datetime.now().strftime("%Y%m%d%H:%M:%S")
@@ -20,8 +21,14 @@ class CustomUser(AbstractUser):
         unique_together = ('username', 'email')
 
 
+CustomUser = get_user_model()
+
+
 class Address(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=50, default='')
+    last_name = models.CharField(max_length=50,default='')
+    phone_number = models.CharField(max_length=15,default='')
     home = models.CharField(max_length=55, blank=True)
     street = models.CharField(max_length=255)
     city = models.CharField(max_length=50)
@@ -30,6 +37,17 @@ class Address(models.Model):
 
     class Meta:
         unique_together = ('user', 'street', 'city', 'state', 'zip_code')
+
+    def save(self, *args, **kwargs):
+        if not self.first_name:
+            self.first_name = self.user.first_name
+        if not self.last_name:
+            self.last_name = self.user.last_name
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.first_name}, {self.home}, {self.city}, {self.zip_code}"
+
 
 class Category(models.Model):
     name = models.CharField(max_length=150,null=False)
@@ -107,3 +125,23 @@ class Cart(models.Model):
     @property
     def total_cost(self):
         return self.product_quantity*self.products.selling_price
+    
+class Order(models.Model):
+
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    products = models.ManyToManyField(Product, through='OrderProduct')
+    created_at = models.DateTimeField(auto_now_add=True)
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    pstatus = models.CharField(max_length=20,default='')
+    shipping_address = models.ForeignKey(Address, on_delete=models.CASCADE)  # Ensure address is always present
+    
+    def __str__(self):
+        return f"Order {self.id}"
+
+class OrderProduct(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
+
+    def __str__(self):
+        return f"{self.product.ProductName} - {self.quantity}"

@@ -102,6 +102,7 @@
             <div class="row mb-4">
               <!-- col.// -->
               <div class="col-md-4 col-6 mb-3">
+                {% if products.StockQuantity > 0 %}
                 <label class="mb-2 d-block">Quantity</label>
                 <input type="hidden" value="{{products.ProductID}}" id="pid">
                                     <p>
@@ -116,6 +117,9 @@
             
             <a href="#" class="btn btn-primary shadow-0" id="btnCart"> <i class="me-1 fa fa-shopping-basket"></i> Add to cart </a>
             <a href="#" class="btn btn-light border border-secondary py-2 icon-hover px-3"> <i class="me-1 fa fa-heart fa-lg"></i> Save </a>
+            {% else %}
+            <a href="#" class="btn btn-primary shadow-0"> <i class="me-1 fa fa-minus"></i> Out of Stock </a>
+            {% endif %}
           </div>
         </main>
       </div>

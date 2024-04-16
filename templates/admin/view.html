@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2 class="text-center">Products List</h2>
+  
+
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <a href="{% url 'aaddproduct' %}" class="btn btn-success float-right mt-3">Add New Products</a>
+        <a href="{% url 'aaddproduct' %}" class="btn btn-success float-right mt-3">Add New Category</a>
+        <a href="{% url 'aaddproduct' %}" class="btn btn-success float-right mt-3">Add New SubCategory</a>
+        <a href="{% url 'aaddproduct' %}" class="btn btn-danger float-right mt-3">View All Catgories</a>
+        <a href="{% url 'aaddproduct' %}" class="btn btn-danger float-right mt-3">Sellers List</a>
+        <a href="{% url 'aaddproduct' %}" class="btn btn-danger float-right mt-3">Customers List</a>
+        <a href="{% url 'aaddproduct' %}" class="btn btn-danger float-right mt-3">All Orders</a>
+      </div>
+      
+    </div>
+    <table class="table" style="margin-top: 35px;">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Seller</th>
+          <th>Quantity</th>
+          <th>Original Price</th>
+          <th>Selling Price</th>
+          <th>Image</th>
+          <th>Hidden</th>
+          <th>Bestseller</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for product in products %}
+          <tr>
+            <td>{{ product.ProductName }}</td>
+            <td>{{ product.SellerID }}</td>
+            <td>{{ product.StockQuantity }}</td>
+            <td>{{ product.original_Price }}</td>
+            <td>{{ product.selling_price }}</td>
+            <td>
+              {% if product.image1 %}
+                <img src="{{ product.image1.url }}" alt="{{ product.ProductName }} Image" width="100">
+              {% else %}
+                No Image
+              {% endif %}
+            </td>
+            <td>{{ product.hide }}</td>
+            <td>{{ product.bestseller }}</td>
+            <td>
+             <a href="{% url 'aeditproduct' product.ProductID %}" class="btn btn-primary">Edit</a>
+              <a href="{% url 'adeleteproduct' product.ProductID %}" class="btn btn-danger">Delete</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

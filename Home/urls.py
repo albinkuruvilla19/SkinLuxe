@@ -24,4 +24,14 @@ urlpatterns = [
     path('removecart/<str:cid>', views.removecart, name='removecart'),
     path('updatequantity/<int:cart_item_id>/', views.update_quantity, name='update_quantity'),
 
+    path('checkout/', views.checkout, name='checkout'),
+    path('checkout/success/', views.checkout_success, name='checkout_success'),
+    path('payment/success/', views.checkout_success, name='payment_success'),
+    path('orders/', views.seller_orders, name='seller_orders'),
+
+    path('profile/edit/', views.edit_customer_profile, name='edit_profile'),
+    path('view/',views.view,name="view"),
+    path('aaddproduct/',views.admin_add_product,name="aaddproduct"),
+    path('a/editproduct/<int:product_id>/', views.admin_edit_product, name='aeditproduct'),
+    path('adelete/<int:product_id>/',views.admin_delete_product, name='adeleteproduct'),
 ]

@@ -1,0 +1,40 @@
+<!-- seller/s_orders.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Seller Orders</title>
+</head>
+<body>
+    <h1>Orders</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Customer</th>
+                <th>Products</th>
+                <th>Total Amount</th>
+                <th>Status</th>
+                <th>Shipping Address</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+                <tr>
+                    <td>{{ order.id }}</td>
+                    <td>{{ order.user.username }}</td>
+                    <td>
+                        <ul>
+                            {% for order_product in order.orderproduct_set.all %}
+                                <li>{{ order_product.product.ProductName }} - {{ order_product.quantity }}</li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                    <td>{{ order.total_amount }}</td>
+                    <td>{{ order.pstatus }}</td>
+                    <td>{{ order.shipping_address }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

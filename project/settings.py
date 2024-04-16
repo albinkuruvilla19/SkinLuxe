@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-up08c)zcp$t38_)y5r%+3e1$xlo$1)zk@$dng_(&58@zi(%tfv
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin-allow-popups'
 
 # Application definition
 
@@ -41,8 +41,7 @@ INSTALLED_APPS = [
     'Home',
     'crispy_forms',
     'crispy_bootstrap4',
-    'ckeditor',
-    
+    'ckeditor', 
 ]
 
 MIDDLEWARE = [
@@ -142,3 +141,6 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 CKEDITOR_UPLOAD_PATH = 'uploads/'
+
+RAZOR_KEY_ID = 'rzp_test_Es0ovzWvtwwh2I'
+RAZOR_KEY_SECRET = 'mYbczN43G02hhlJeB0VICsvu'

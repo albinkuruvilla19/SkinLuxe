@@ -4,17 +4,24 @@ from .models import *
 from django.contrib.auth import authenticate,logout
 from django.contrib import messages
 from django.contrib.auth import login as auth_login
-from .forms import CustomerSignUpForm, SellerSignUpForm,CustomerLoginForm, SellerLoginForm,ProductForm
+from .forms import CustomerSignUpForm, SellerSignUpForm,CustomerLoginForm, SellerLoginForm,ProductForm,CustomerProfileForm,ProductForm2,AddressForm
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse,HttpResponseBadRequest
+from collections import defaultdict
+from django.core.exceptions import ObjectDoesNotExist
+import razorpay
+from django.db import transaction
+
+
 
 # Create your views here.
+#HOMEPAGE
 def index(request):
     products = Product.objects.filter(bestseller=1)
     return render(request,'index.html',{"products":products})
 
 
-
+#CUSTOMER AUTH
 def customer_signup(request):
     if request.method == 'POST':
         form = CustomerSignUpForm(request.POST)
@@ -43,6 +50,8 @@ def customer_login(request):
         form = CustomerLoginForm()
     return render(request, 'login.html', {'form': form})
 
+
+#SELLER AUTH
 def seller_signup(request):
     if request.method == 'POST':
         form = SellerSignUpForm(request.POST)
@@ -79,7 +88,6 @@ def logout_view(request):
 
 
 def seller_dashboard(request):
-
     return render(request, 'seller/index.html')
 
 def seller_products(request):
@@ -180,9 +188,7 @@ def removecart(request,cid):
     cart.delete()
     return redirect('cart')
 
-from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
-from .models import Cart
+
 
 def update_quantity(request, cart_item_id):
     if request.method == 'GET':
@@ -201,3 +207,184 @@ def update_quantity(request, cart_item_id):
             return JsonResponse({'success': False, 'error': 'Quantity not provided'}, status=400)
     else:
         return JsonResponse({'success': False, 'error': 'Only GET method is allowed'}, status=405)
+
+
+
+def checkout_success(request):
+    return render(request, 'checkout_success.html')
+
+
+# @transaction_atomic
+def checkout(request):
+    razorpay_order = None  # Define razorpay_order with a default value of None
+
+    if request.method == 'POST':
+        # Handle form submission
+        if 'razorpay_payment_id' not in request.POST:
+            address_form = AddressForm(request.POST)
+            if address_form.is_valid():
+                shipping_address = address_form.save(commit=False)
+                shipping_address.user = request.user
+                shipping_address.save()
+
+                # Create order
+                cart_items = Cart.objects.filter(user=request.user, checked_out=False)
+                total_amount = sum(cart_item.total_cost for cart_item in cart_items)
+                order = Order.objects.create(user=request.user, total_amount=total_amount, shipping_address=shipping_address,pstatus="paid")
+
+                # Create order products and reduce qunatity
+                for cart_item in cart_items:
+                    OrderProduct.objects.create(order=order, product=cart_item.products, quantity=cart_item.product_quantity)
+                    cart_item.checked_out = True
+                    cart_item.save()
+                    product = cart_item.products
+                    product.StockQuantity -= cart_item.product_quantity
+                    product.save()
+
+                #razorpay Integration
+                client = razorpay.Client(auth=("rzp_test_Es0ovzWvtwwh2I", "mYbczN43G02hhlJeB0VICsvu"))
+                try:
+                    razorpay_order = client.order.create({
+                        'amount': int(total_amount * 100),  # Amount in paisa
+                        'currency': 'INR',  # Currency code
+                        'payment_capture': 1  # Auto capture payment
+                    })
+                    print("Razorpay order created successfully:", razorpay_order)
+                except razorpay.errors.BadRequestError as e:
+                    print("Razorpay order creation failed:", e)
+
+                # Redirect to payment gateway
+                return render(request, 'checkout.html', {
+                    'address_form': address_form,
+                    'razorpay_order_id': razorpay_order['id'] if razorpay_order else None,
+                    'razorpay_amount': razorpay_order['amount'] if razorpay_order else None,
+                    'razorpay_currency': razorpay_order['currency'] if razorpay_order else None,
+                    'razorpay_key': 'rzp_test_Es0ovzWvtwwh2I'  # Replace with your Razorpay public key
+                })
+            else:
+                # Handle invalid form submission
+                return HttpResponseBadRequest("Invalid form data")
+        
+        # Handle Razorpay payment callback
+        else:
+            payment_id = request.POST.get('razorpay_payment_id')
+            order_id = request.POST.get('razorpay_order_id')
+            order = Order.objects.order_by('-id').first()
+            
+            # Verify payment
+            client = razorpay.Client(auth=("rzp_test_Es0ovzWvtwwh2I", "mYbczN43G02hhlJeB0VICsvu"))
+            try:
+                payment = client.payment.fetch(payment_id)
+                print("Payment details:", payment)
+            except razorpay.errors.NotFoundError:
+                print("Payment with ID", payment_id, "not found.")
+            except razorpay.errors.RazorpayError as e:
+                print("Error fetching payment details:", e)
+
+            
+            if payment['status'] == 'captured':
+                print("Order status before update:", order.pstatus)
+                order.pstatus = 'paid'
+                order.save()
+                print("Order status after update:", order.pstatus)
+                return HttpResponse("Payment Success")
+            else:
+                order.pstatus = 'failed'
+                order.save()
+                print("Order status after update:", order.pstatus)
+                return HttpResponseBadRequest("Payment Failed")
+
+    else:
+        # GET request or initial form display
+        address_form = AddressForm()
+        return render(request, 'checkout.html', {'address_form': address_form})
+
+
+
+
+def seller_orders(request):
+    # Assuming the logged-in user is a seller
+    logged_in_seller = request.user.seller_profile
+    
+    # Retrieve products sold by the logged-in seller
+    seller_products = Product.objects.filter(SellerID=logged_in_seller)
+    
+    # Retrieve orders containing those products and sort them by creation date
+    seller_orders = Order.objects.filter(products__in=seller_products).order_by('-created_at')
+    
+    # Create a dictionary to store orders by their IDs
+    orders_dict = defaultdict(Order)
+    
+    # Iterate over each order and filter products
+    for order in seller_orders:
+        try:
+            # If the order already exists in the dictionary, retrieve it; otherwise, use the current order
+            current_order = orders_dict[order.id] if order.id in orders_dict else order
+            
+            # Filter the products of the order based on the seller
+            seller_products_in_order = order.products.filter(SellerID=logged_in_seller)
+            
+            # Update the products for the order
+            current_order.products.add(*seller_products_in_order)
+            
+            # Store the updated order in the dictionary
+            orders_dict[order.id] = current_order
+        except ObjectDoesNotExist:
+            # Handle the case where the product doesn't exist in the order
+            pass
+    
+    # Extract the values (orders) from the dictionary
+    unique_orders = list(orders_dict.values())
+    
+    return render(request, 'seller/tables.html', {'orders': unique_orders})
+
+
+@login_required
+def edit_customer_profile(request):
+    customer = request.user.customer_profile
+    if request.method == 'POST':
+        form = CustomerProfileForm(request.POST, instance=customer)
+        if form.is_valid():
+            form.save()
+            return redirect('index')
+    else:
+        form = CustomerProfileForm(instance=customer)
+    return render(request, 'c_profile.html', {'form': form})
+
+
+
+# admin
+def view(request):
+    products = Product.objects.all()
+    return render(request, 'admin/view.html', {'products': products})
+
+def admin_add_product(request):
+    if request.method == 'POST':
+        form = ProductForm2(request.POST,request.FILES)
+        if form.is_valid():
+            form.save()
+            
+            # Redirect to a project list view
+            return redirect('view')
+    
+    form = ProductForm2()
+    return render(request,'admin/addproduct.html',{'form': form})
+
+def admin_edit_product(request, product_id):
+    product = Product.objects.get(ProductID=product_id)
+
+    if request.method == 'POST':
+        form = ProductForm2(request.POST, request.FILES, instance=product)
+        if form.is_valid():
+            form.save()
+            return redirect('view')  
+    else:
+        form = ProductForm2(instance=product)
+    return render(request, 'admin/editproduct.html', {'form': form})
+
+
+def admin_delete_product(request, product_id):
+    product = Product.objects.get(ProductID=product_id)  
+    messages.success(request,"deleted")
+    product.delete()
+    return redirect('view')

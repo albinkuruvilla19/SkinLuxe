@@ -103,7 +103,7 @@
                               <span style="color: black; font-size: 19px;">Rs. {{ item.selling_price }}</span>
                               <span style="margin-left: 10px; color: gray;"><s>Rs. {{ item.original_Price }}</s></span>
                           </p>
-                          <a href="#" class="btn btn-dark mt-auto mx-auto" style="margin-top: 15px;width:100%;font-size: smaller;font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;color: #bdb9b9;">Add to Cart</a>
+                          <a href="{% url 'productsview' item.SubCategoryID item.ProductName %}" class="btn btn-dark mt-auto mx-auto" style="margin-top: 15px;width:100%;font-size: smaller;font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;color: #bdb9b9;">View Details</a>
                       </div>
                   </div>
               </div>

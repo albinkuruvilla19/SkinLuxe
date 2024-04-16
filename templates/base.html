@@ -156,11 +156,19 @@
           </div>
 
           <ul class="d-flex justify-content-end list-unstyled m-0">
+            {% if request.user.is_authenticated %}
+            <li>
+              <a href="{% url 'edit_profile' %}" class="rounded-circle bg-light p-2 mx-1">
+                <svg width="24" height="24" viewBox="0 0 24 24" style="color:black;"><use xlink:href="#user"></use></svg>
+              </a>
+            </li>
+            {% else %}
             <li>
               <a href="{% url 'customer_login' %}" class="rounded-circle bg-light p-2 mx-1">
                 <svg width="24" height="24" viewBox="0 0 24 24" style="color:black;"><use xlink:href="#user"></use></svg>
               </a>
             </li>
+            {% endif %}
             <li>
               <a href="#" class="rounded-circle bg-light p-2 mx-1">
                 <svg width="24" height="24" viewBox="0 0 24 24" style="color:black;"><use xlink:href="#heart"></use></svg>
@@ -257,6 +265,9 @@
                   </li> 
                   <li class="nav-item">
                     <a href="{% url 'logout' %}" class="nav-link">Logout</a>
+                  </li> 
+                  <li class="nav-item">
+                    <a href="{% url 'cart' %}" class="nav-link">Cart</a>
                   </li> 
                   {% endif %}
                 </ul>

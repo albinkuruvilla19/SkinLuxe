@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import CustomUser,Seller,Product,Customer
+from .models import CustomUser,Seller,Product,Customer,Address
 
 class CustomerSignUpForm(UserCreationForm):
     fname = forms.CharField(max_length=100)
@@ -64,3 +64,22 @@ class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
         fields = ['SubCategoryID','ProductName','Description','Ingredients','original_Price','selling_price','StockQuantity','reorderlevel','bestseller','image1','image2','hide']
+
+
+
+class AddressForm(forms.ModelForm):
+    class Meta:
+        model = Address
+        fields = ['first_name','last_name','home', 'street', 'city', 'state', 'zip_code','phone_number']
+
+
+class CustomerProfileForm(forms.ModelForm):
+    class Meta:
+        model = Customer
+        fields = ['fname', 'lname', 'email', 'phone']
+
+
+class ProductForm2(forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = ['SubCategoryID','ProductName','Description','Ingredients','original_Price','selling_price','SellerID','StockQuantity','reorderlevel','bestseller','image1','image2','hide']
