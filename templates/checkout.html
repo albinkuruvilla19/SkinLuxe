@@ -1,3 +1,6 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,43 +10,30 @@
 </head>
 <body>
     <h1>Checkout</h1>
-    <form method="POST">
+    
+    <h2>Cart Items</h2>
+    <ul>
+        {% for item in cart_items %}
+            <li>{{ item.products.ProductName }} - Quantity: {{ item.product_quantity }} - Price: ${{ item.total_cost }}</li>
+        {% endfor %}
+    </ul>
+    
+    <h2>Shipping Address</h2>
+    <form method="POST" action="{% url 'checkout' %}">
         {% csrf_token %}
-        {{ address_form.as_p }}
-        <button type="submit">Save Address</button>
+        <select name="shipping_address" required>
+            {% for address in addresses %}
+                <option value="{{ address.id }}">{{ address.first_name }} {{ address.last_name }}, {{ address.street }}, {{ address.city }}, {{ address.zip_code }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Place Order</button>
     </form>
-
-
-
-    <button id="rzp-button1">Pay</button>
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-<script>
-var options = {
-    "key": "rzp_test_Es0ovzWvtwwh2I", // Enter the Key ID generated from the Dashboard
-    "amount": "{{ razorpay_amount }}", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
-    "currency": "INR",
-    "name": "SkinLuxe", //your business name
-    "description": "Test Transaction",
-    "image": "https://example.com/your_logo",
-    "order_id": "{{ razorpay_order_id }}", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-    "callback_url": "https://eneqd3r9zrjok.x.pipedream.net/",
-    "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number
-        "name": "Gaurav Kumar", //your customer's name
-        "email": "gaurav.kumar@example.com",
-        "contact": "9000090000" //Provide the customer's phone number for better conversion rates 
-    },
-    "notes": {
-        "address": "Razorpay Corporate Office"
-    },
-    "theme": {
-        "color": "#800080"
-    }
-};
-var rzp1 = new Razorpay(options);
-document.getElementById('rzp-button1').onclick = function(e){
-    rzp1.open();
-    e.preventDefault();
-}
-</script>
 </body>
 </html>
+
+</html>
+
+
+
+
+  {% endblock content %}

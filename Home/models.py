@@ -46,7 +46,7 @@ class Address(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.first_name}, {self.home}, {self.city}, {self.zip_code}"
+        return f"{self.first_name} {self.last_name}, {self.home}, {self.city}, {self.zip_code}"
 
 
 class Category(models.Model):
@@ -94,6 +94,11 @@ class Customer(models.Model):
         return self.user.username
 
 class Product(models.Model):
+    STATUS_CHOICES = (
+        ('pending', 'Pending Review'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+    )
     ProductID = models.AutoField(primary_key=True)
     SubCategoryID = models.ForeignKey(SubCategory, on_delete=models.CASCADE)
     SellerID = models.ForeignKey(Seller, on_delete=models.CASCADE)
@@ -108,6 +113,7 @@ class Product(models.Model):
     image2 = models.ImageField(upload_to=getFileName, null=True, blank=True)
     bestseller = models.BooleanField(default=False,help_text="0-default,1-bestseller")
     hide = models.BooleanField(default=False, help_text="0-show,1-hidden")
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
 
     def __str__(self):
         return self.ProductName
@@ -125,9 +131,9 @@ class Cart(models.Model):
     @property
     def total_cost(self):
         return self.product_quantity*self.products.selling_price
-    
-class Order(models.Model):
 
+
+class Order(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     products = models.ManyToManyField(Product, through='OrderProduct')
     created_at = models.DateTimeField(auto_now_add=True)

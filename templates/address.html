@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<head>
+    <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
+
+    <!-- Custom styles for this page -->
+    <link href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
+</head>
+
+
+<section class="section-conten padding-y bg" style="padding-top: 30px;">
+    <div class="container">
+        <div class="row">
+
+            {% include 'includes/dashboard_sidebar.html' %}
+            <main class="col-md-9">
+
+                <article class="card" >
+                    <header class="card-header">
+                        <strong class="d-inline-block mr-3" style="font-size: 1.25rem;">Addresses</strong>
+                    </header>
+                    <div class="row" style="margin-top: 20px;margin-left: 5px; margin-right: 5px;">
+                        {% for address in addresses %}
+                        <div class="col-md-3 mb-3">
+                            <div class="card" style="max-width:14rem; position: relative;"> <!-- Added position: relative; -->
+                                <div class="card-body bg-info-subtle">
+                                    <!-- Close button for delete -->
+                                    <a href="{% url 'delete_address' address.id %}"><button type="button" class="close" aria-label="Close" style="position: absolute; top: 5px; right: 5px;"> <!-- Adjusted position -->
+                                        <span aria-hidden="true">&times;</span>
+                                    </button></a>
+                                    <!-- Address details -->
+                                    <ul style="padding-left: 0; margin-bottom: 0;">
+                                        <li style="list-style: none;">
+                                            {{ address.first_name }} {{ address.last_name }},</br>
+                                            {{ address.home }},</br>
+                                            {{ address.city }},</br>
+                                            {{ address.phone_number }}
+                                            <!-- Form for delete -->
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        {% endfor %}
+                    </div>
+
+                      
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+
+                                    <h2>Add New Address</h2>
+                                        <form method="post">
+                                        {% csrf_token %}
+                                        {% load crispy_forms_tags %}
+                                        {{ form|crispy }}
+                                            <button type="submit">Add Address</button>
+                                        </form>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </main>
+        </div>
+    </div>
+</section>
+{% endblock %}

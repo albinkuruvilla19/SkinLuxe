@@ -1,0 +1,30 @@
+<style>
+    .list-group-item:hover,
+.list-group-item:focus,
+.list-group-item:active {
+    background-color: #e66b0d; /* Change to desired color */
+    color: white; /* Change to desired text color */
+    border-color: #ddd; /* Change to desired border color */
+}
+
+.list-group-item:active {
+    background-color: #e66b0d; /* Change to desired color */
+    color: white; /* Change to desired text color */
+    border-color: #ddd; /* Change to desired border color */
+}
+
+</style>
+
+<aside class="col-md-3" style="margin-left: -100px;margin-top: 100px;margin-right: 80px;">
+    <!--   SIDEBAR   -->
+    <ul class="list-group">
+        <a class="list-group-item " href="{% url 'customer_orders' %}"> My Orders </a>
+        <a class="list-group-item " href="{% url 'edit_profile' %}"> Edit Profile </a>
+        <a class="list-group-item" href=""> Change Password </a>
+        <a class="list-group-item" href="{% url 'address' %}"> My Addresses </a>
+        
+    </ul>
+    <br>
+    <a class="btn btn-light btn-block" href="{% url 'logout' %}"> <i class="fa fa-power-off"></i> <span class="text">Log out</span> </a> 
+    <!--   SIDEBAR .//END   -->
+</aside>

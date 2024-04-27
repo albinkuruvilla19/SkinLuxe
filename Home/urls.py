@@ -25,13 +25,15 @@ urlpatterns = [
     path('updatequantity/<int:cart_item_id>/', views.update_quantity, name='update_quantity'),
 
     path('checkout/', views.checkout, name='checkout'),
-    path('checkout/success/', views.checkout_success, name='checkout_success'),
+    path('order_confirmation/<int:order_id>/', views.order_confirmation, name='order_confirmation'),
     path('payment/success/', views.checkout_success, name='payment_success'),
     path('orders/', views.seller_orders, name='seller_orders'),
 
     path('profile/edit/', views.edit_customer_profile, name='edit_profile'),
     path('view/',views.view,name="view"),
-    path('aaddproduct/',views.admin_add_product,name="aaddproduct"),
-    path('a/editproduct/<int:product_id>/', views.admin_edit_product, name='aeditproduct'),
-    path('adelete/<int:product_id>/',views.admin_delete_product, name='adeleteproduct'),
+    path('review/', views.admin_review, name='admin_review'),
+
+    path('c_orders/', views.customer_orders, name='customer_orders'),
+    path('address/',views.address,name="address"),
+    path('address/delete/<int:address_id>/', views.delete_address, name='delete_address'),
 ]

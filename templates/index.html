@@ -93,14 +93,18 @@
             <div class="row">
               {% for item in products %}
               <div class="col-lg-3 col-md-4 mb-5">
-                  <div class="card border-0 rounded-3 shadow">
-                      <img class="card-img-top img-fluid" src="{{ item.image1.url }}" alt="{{ item.ProductName }}" style="max-height: 320px;">
+                  <div class="card border-0 rounded-3 shadow" style="width: 280px;">
+                      <img class="card-img-top img-fluid" src="{{ item.image1.url }}" alt="{{ item.ProductName }}" style="max-height: 280px;max-width:280px">
                       <div class="card-body d-flex flex-column align-items-center">
-                          <a style="text-decoration: none; color: dimgray;" href="{% url 'productsview' item.SubCategoryID item.ProductName %}">
+                        <p class="card-text">
+                          <span style="color: gray; font-size: 11px;">{{ item.SubCategoryID }}</span>
+                      </p>
+                          <a style="text-decoration: none; color: black;" href="{% url 'productsview' item.SubCategoryID item.ProductName %}">
                               <p class="card-title text-center">{{ item.ProductName }}</p>
                           </a>
+                          
                           <p class="card-text">
-                              <span style="color: black; font-size: 19px;">Rs. {{ item.selling_price }}</span>
+                              <span style="color: black; font-size: 15px;">Rs. {{ item.selling_price }}</span>
                               <span style="margin-left: 10px; color: gray;"><s>Rs. {{ item.original_Price }}</s></span>
                           </p>
                           <a href="{% url 'productsview' item.SubCategoryID item.ProductName %}" class="btn btn-dark mt-auto mx-auto" style="margin-top: 15px;width:100%;font-size: smaller;font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;color: #bdb9b9;">View Details</a>
