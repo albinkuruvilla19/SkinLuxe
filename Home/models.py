@@ -134,11 +134,16 @@ class Cart(models.Model):
 
 
 class Order(models.Model):
+    STATUS_CHOICES = (
+        ('processing', 'Processing'),
+        ('shipped', 'Shipped'),
+        ('delivered', 'Delivered'),
+    )
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     products = models.ManyToManyField(Product, through='OrderProduct')
     created_at = models.DateTimeField(auto_now_add=True)
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
-    pstatus = models.CharField(max_length=20,default='')
+    pstatus = models.CharField(max_length=20,choices=STATUS_CHOICES,default='')
     shipping_address = models.ForeignKey(Address, on_delete=models.CASCADE)  # Ensure address is always present
     
     def __str__(self):

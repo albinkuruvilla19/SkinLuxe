@@ -1,27 +1,31 @@
 <!-- review.html -->
 
-{% extends 'base.html' %}  <!-- Assuming you have a base template -->
+{% extends 'admin/admin_base.html' %}  <!-- Assuming you have a base template -->
 
-{% block content %}
-<div class="container">
-    <table id="product-table" class="display">
-        <thead>
+{% block admin %}
+<div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">New Product Listings</h3>
+      </div>
+{% if pending_products %}
+      <div class="table-responsive">
+        <table class="table card-table table-vcenter text-nowrap datatable">
+          <thead>
             <tr>
-                <th>Product Name</th>
-                <th>Seller</th>
-                <th>Description</th>
-                <th>Price</th>
-                <th>Image</th>
-                <th>Ingredients</th>
-
-                <!-- Add other columns if needed -->
-                <th>Action</th>
+              <th>Product Name</th>
+              <th>Seller</th>
+              <th>Description</th>
+              <th>Price</th>
+              <th>Image</th>
+              <th>Ingredients</th>
+              <th>Actions</th>
             </tr>
-        </thead>
-        <tbody>
+          </thead>
+          <tbody>
             {% for product in pending_products %}
-                <tr>
-                    <td>{{ product.ProductName }}</td>
+            <tr>
+                <td>{{ product.ProductName }}</td>
                     <td>{{ product.SellerID }}</td>
                     <td>{{ product.Description }}</td>
                     <td>{{ product.selling_price }}</td>
@@ -37,18 +41,15 @@
                             <button type="submit" class="btn btn-danger" name="action" value="reject">Reject</button>
                         </form>
                     </td>
-                </tr>
+            </tr>
             {% endfor %}
-        </tbody>
-    </table>
-</div>
-{% endblock %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  {% else %}
+      <center><div class="container"><h1>No New Product Listings!!</h1></div></center>
+{% endif %}
 
-{% block scripts %}
-<script src="https://cdn.datatables.net/1.11.6/js/jquery.dataTables.min.js"></script>
-<script>
-    $(document).ready(function() {
-        $('#product-table').DataTable();
-    });
-</script>
-{% endblock %}
+  {% endblock %}

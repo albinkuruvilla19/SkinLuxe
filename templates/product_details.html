@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}BagEasy.in{% endblock title %}BagEasy.in
+{% block title %}SkinLuxe{% endblock title %}
 
 
 {% block content %}
@@ -15,6 +15,14 @@
   color: #3b71ca !important;
 }
 </style>
+<nav aria-label="breadcrumb"class="mx-5 bg-info-subtle" style="padding: 15px; border-radius: 5px;">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="#"style="text-decoration:none;">Home</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'shop' %}"style="text-decoration:none;">Shop</a></li>
+    <li class="breadcrumb-item"><a href="#"style="text-decoration:none;">{{products.SubCategoryID}}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{products.ProductName}}</li>
+  </ol>
+</nav>
   <!-- content -->
   <section class="py-5">
     <div class="container">
@@ -137,9 +145,7 @@
               <li class="nav-item d-flex" role="presentation">
                 <a class="nav-link d-flex align-items-center justify-content-center w-100 active" id="ex1-tab-1" data-mdb-toggle="pill" href="#ex1-pills-1" role="tab" aria-controls="ex1-pills-1" aria-selected="true">Ingredients</a>
               </li>
-              <li class="nav-item d-flex" role="presentation">
-                <a class="nav-link d-flex align-items-center justify-content-center w-100" id="ex1-tab-4" data-mdb-toggle="pill" href="#ex1-pills-4" role="tab" aria-controls="ex1-pills-4" aria-selected="false">Seller profile</a>
-              </li>
+              
             </ul>
             <!-- Pills navs -->
   

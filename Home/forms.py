@@ -59,6 +59,9 @@ class SellerLoginForm(forms.Form):
     username = forms.CharField(max_length=150)
     password = forms.CharField(widget=forms.PasswordInput)
 
+class AdminLoginForm(forms.Form):
+    username = forms.CharField(max_length=150)
+    password = forms.CharField(widget=forms.PasswordInput)
 
 class ProductForm(forms.ModelForm):
     class Meta:

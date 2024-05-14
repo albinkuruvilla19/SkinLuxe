@@ -1,0 +1,403 @@
+{% extends "admin/admin_base.html" %}
+{% load static %}
+{% block admin  %}
+  
+
+
+  <body >
+    
+    <div class="page">
+      
+      <div class="page-wrapper">
+        <!-- Page header -->
+        <div class="page-header d-print-none">
+          <div class="container-xl">
+            <div class="row g-2 align-items-center">
+              <div class="col">
+                
+                <!-- Page pre-title -->
+                <div class="page-pretitle">
+                  Overview
+                </div>
+                <h2 class="page-title">
+                  Dashboard
+                </h2>
+                
+                
+              </div>
+              <!-- Page title actions -->
+              <div class="col-auto ms-auto d-print-none">
+                <div class="btn-list">
+                  <span class="d-none d-sm-inline">
+                    <a href="{% url "admin_review" %}" class="btn btn-warning">
+                      New Product Listings
+                    </a>
+                  </span>
+                  <a href="#" class="btn btn-primary d-none d-sm-inline-block" data-bs-toggle="modal" data-bs-target="#modal-report">
+                    <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
+                    Create new Categories
+                  </a>
+                  <a href="#" class="btn btn-primary d-sm-none btn-icon" data-bs-toggle="modal" data-bs-target="#modal-report" aria-label="Create new report">
+                    <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Page body -->
+        <div class="page-body">
+          <div class="container-xl">
+            <div class="row row-deck row-cards">
+              <div class="col-sm-6 col-lg-3">
+
+                <div class="card" style="box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);">
+                  <a href="{% url "admin_orders" %}"><div class="card-body" style="display: flex;align-items: center;justify-content:center;">
+                    <div class="row align-items-center" >
+                      <div class="col-auto">
+                        <span class="bg-dark text-white avatar"><!-- Download SVG icon from http://tabler-icons.io/i/currency-dollar -->
+                          <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M17 17h-11v-14h-2" /><path d="M6 5l14 1l-1 7h-13" /></svg>
+                        </span>
+                      </div>
+                      <div class="col">
+                        <div class="font-weight-bold">
+                          <span class="text-dark"  style="font-weight: bold;font-size: 20px;">{{ total_orders|last }} Orders</span>
+                        </div>
+                        <div class="text-muted">
+                          <span style="font-size: 17px;">This Month</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div></a>
+                </div>
+
+              </div>
+              <div class="col-sm-6 col-lg-3">
+                <div class="card" style="box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);">
+                  <div class="card-body" style="display: flex;align-items: center;justify-content:center;">
+                    <div class="row align-items-center" >
+                      <div class="col-auto">
+                        <span class="bg-dark text-white avatar"><!-- Download SVG icon from http://tabler-icons.io/i/currency-dollar -->
+                          <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-databricks"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 17l9 5l9 -5v-3l-9 5l-9 -5v-3l9 5l9 -5v-3l-9 5l-9 -5l9 -5l5.418 3.01" /></svg>
+                        </span>
+                      </div>
+                      <div class="col">
+                        <div class="font-weight-bold">
+                          <span style="font-weight: bold;font-size: 20px;">{{products}}</span>
+                        </div>
+                        <div class="text-muted">
+                          <span style="font-size: 17px;">Products Listed</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6 col-lg-3">
+                <div class="card" style="box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);"><a href="{% url "customers" %}">
+                  <div class="card-body" style="display: flex;align-items: center;justify-content:center;">
+                    <div class="row align-items-center" >
+                      <div class="col-auto">
+                        <span class="bg-dark text-white avatar"><!-- Download SVG icon from http://tabler-icons.io/i/currency-dollar -->
+                          <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-users"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" /><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /><path d="M21 21v-2a4 4 0 0 0 -3 -3.85" /></svg>
+                        </span>
+                      </div>
+                      <div class="col">
+                        <div class="font-weight-bold">
+                          <span  class="text-dark" style="font-weight: bold;font-size: 20px;">{{customers}}</span>
+                        </div>
+                        <div class="text-muted">
+                          <span style="font-size: 17px;">Registered Customers</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div></a>
+              </div>
+              <div class="col-sm-6 col-lg-3">
+                <div class="card" style="box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);"><a href="{% url "sellers" %}">
+                  <div class="card-body" style="display: flex;align-items: center;justify-content:center;">
+                    <div class="row align-items-center" >
+                      <div class="col-auto">
+                        <span class="bg-dark text-white avatar"><!-- Download SVG icon from http://tabler-icons.io/i/currency-dollar -->
+<svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-user-star"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" /><path d="M6 21v-2a4 4 0 0 1 4 -4h.5" /><path d="M17.8 20.817l-2.172 1.138a.392 .392 0 0 1 -.568 -.41l.415 -2.411l-1.757 -1.707a.389 .389 0 0 1 .217 -.665l2.428 -.352l1.086 -2.193a.392 .392 0 0 1 .702 0l1.086 2.193l2.428 .352a.39 .39 0 0 1 .217 .665l-1.757 1.707l.414 2.41a.39 .39 0 0 1 -.567 .411l-2.172 -1.138z" /></svg>                        </span>
+                      </div>
+                      <div class="col">
+                        <div class="font-weight-bold">
+                          <span class="text-dark" style="font-weight: bold;font-size: 20px;">{{sellers}}</span>
+                        </div>
+                        <div class="text-muted">
+                          <span style="font-size: 17px;">Registered Sellers</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div></a>
+                </div>
+              </div>
+
+               {% comment %} <div class="col-lg-6">
+                <div class="card">
+                  <div class="card-body">
+                    <h1 class="card-title" style="font-size: 40px;margin-top: 40px;margin-left: 190px;">Total Orders</h1>
+                    <br><br><br><br><br>
+                    <div id="chart-mentions" class="chart-lg"></div>
+                  </div>
+                </div>
+              </div>  {% endcomment %}
+
+              <!-- <div class="col-md-6 col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">TOP SELLING PRODUCTS</h3>
+                    </div>
+                    <table class="table card-table table-vcenter" style="margin-top: 3px;">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Quantity Sold</th>
+                                <th colspan="2">Percentage of Total Quantity Sold</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for product in top_selling_products %}
+                            <tr>
+                                <td><strong>{{ product.ProductName }}</strong></td>
+                                <td>{{ product.total_quantity_sold }}</td>
+                                <td>{{ product.percentage_of_total_quantity_sold|floatformat:"2" }}%</td>
+                                <td class="w-50">
+                                    <div class="progress progress-xs">
+                                        <div class="progress-bar bg-dark" style="width: {{ product.percentage_of_total_quantity_sold }}%"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div> -->
+
+            {% comment %} <div class="col-lg-12">
+              <div class="card">
+                <div class="card-body">
+                  <h1 class="card-title" style="font-size: 40px;margin-top: 40px;margin-left: 500px;">Total Sales</h1>
+                  
+                  <br><br><br><br><br>
+                  <div id="chart-development-activity" class="chart-lg"></div>
+                </div>
+              </div>
+            </div> {% endcomment %}
+             
+            <div class="container-fluid" style="margin-top: 10px;">
+
+              <!-- DataTales Example -->
+              <div class="card shadow mb-4">
+                  <div class="card-header py-3">
+                      <h2 class="m-0 font-weight-bold">Recent Orders</h2>
+                  </div>
+                  <div class="card-body">
+                      <div class="table-responsive">
+                          <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0" style="width: 100%; border-collapse: collapse;">
+                              <thead>
+                                  <tr>
+                                      <th style="padding: 8px; text-align: left; border-bottom: 1px solid #ddd; background-color: #f2f2f2;">Order Id</th>
+                                      <th style="padding: 8px; text-align: left; border-bottom: 1px solid #ddd; background-color: #f2f2f2;">Customer</th>
+                                      <th style="padding: 8px; text-align: left; border-bottom: 1px solid #ddd; background-color: #f2f2f2;">Products</th>
+                                      <th style="padding: 8px; text-align: left; border-bottom: 1px solid #ddd; background-color: #f2f2f2;">Total Amount</th>
+                                      <th style="padding: 8px; text-align: left; border-bottom: 1px solid #ddd; background-color: #f2f2f2;">Shipping Address</th>
+                                      <th style="padding: 8px; text-align: left; border-bottom: 1px solid #ddd; background-color: #f2f2f2;">Ordered On</th>
+                                  </tr>
+                              </thead>
+                              
+                              <tbody>
+                                  {% for order in recent_orders %}
+                                  <tr>
+                                      <td style="padding: 8px; text-align: left; border-bottom: 1px solid #ddd;">{{ order.id }}</td>
+                                      <td style="padding: 8px; text-align: left; border-bottom: 1px solid #ddd;">{{ order.user.username }}</td>
+                                      <td style="padding: 8px; text-align: left; border-bottom: 1px solid #ddd;">
+                                          <ul>
+                                              {% for order_product in order.orderproduct_set.all %}
+                                                  <li>{{ order_product.product.ProductName }} - {{ order_product.quantity }}</li>
+                                              {% endfor %}
+                                          </ul>
+                                      </td>
+                                      <td style="padding: 8px; text-align: left; border-bottom: 1px solid #ddd;">{{ order.total_amount }}</td>
+                                      <td style="padding: 8px; text-align: left; border-bottom: 1px solid #ddd;">{{ order.shipping_address }}</td>
+                                      <td style="padding: 8px; text-align: left; border-bottom: 1px solid #ddd;">{{ order.created_at }}</td>
+                                  </tr>
+                                  {% endfor %}
+                              </tbody>
+                          </table>
+                      </div>
+                  </div>
+              </div>
+
+          </div>
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Libs JS -->
+  
+    <script>
+      // @formatter:off
+      document.addEventListener("DOMContentLoaded", function () {
+          window.ApexCharts && (new ApexCharts(document.getElementById('chart-mentions'), {
+              chart: {
+                  type: "bar",
+                  fontFamily: 'inherit',
+                  height: 240,
+                  parentHeightOffset: 0,
+                  toolbar: {
+                      show: false,
+                  },
+                  animations: {
+                      enabled: false
+                  },
+                  stacked: true,
+              },
+              plotOptions: {
+                  bar: {
+                      columnWidth: '50%',
+                  }
+              },
+              dataLabels: {
+                  enabled: false,
+              },
+              fill: {
+                  opacity: 1,
+              },
+              series: [{
+                  name: "Total Orders",
+                  data: {{ total_orders|safe }}
+              }],
+              tooltip: {
+                  theme: 'dark'
+              },
+              grid: {
+                  padding: {
+                      top: -20,
+                      right: 0,
+                      left: -4,
+                      bottom: -4
+                  },
+                  strokeDashArray: 4,
+                  xaxis: {
+                      lines: {
+                          show: true
+                      }
+                  },
+              },
+              xaxis: {
+                  labels: {
+                      padding: 0,
+                  },
+                  tooltip: {
+                      enabled: false
+                  },
+                  axisBorder: {
+                      show: false,
+                  },
+                  type: 'category',
+                  categories: {{ month|safe }},
+              },
+              yaxis: {
+                  labels: {
+                      padding: 4
+                  },
+              },
+              colors: [tabler.getColor("yellow"), tabler.getColor("primary", 0.8), tabler.getColor("green", 0.8)],
+              legend: {
+                  show: false,
+              },
+          })).render();
+      });
+      // @formatter:on
+  </script>
+  <script>
+    // @formatter:off
+    document.addEventListener("DOMContentLoaded", function () {
+        window.ApexCharts && (new ApexCharts(document.getElementById('chart-development-activity'), {
+            chart: {
+                type: "area",
+                fontFamily: 'inherit',
+                height: 240,
+                parentHeightOffset: 0,
+                toolbar: {
+                    show: false,
+                },
+                animations: {
+                    enabled: false
+                },
+                stacked: true,
+            },
+            plotOptions: {
+                bar: {
+                    columnWidth: '50%',
+                }
+            },
+            dataLabels: {
+                enabled: false,
+            },
+            fill: {
+                opacity: 1,
+            },
+            series: [{
+                name: "Total Sales",
+                data:{{ total_revenue|safe }}
+            }],
+            tooltip: {
+                theme: 'dark'
+            },
+            grid: {
+                padding: {
+                    top: -20,
+                    right: 0,
+                    left: -4,
+                    bottom: -4
+                },
+                strokeDashArray: 4,
+                xaxis: {
+                    lines: {
+                        show: true
+                    }
+                },
+            },
+            xaxis: {
+                labels: {
+                    padding: 0,
+                },
+                tooltip: {
+                    enabled: false
+                },
+                axisBorder: {
+                    show: false,
+                },
+                type: 'category',
+                categories: {{ month|safe }},
+            },
+            yaxis: {
+                labels: {
+                    padding: 4
+                },
+            },
+            colors: [tabler.getColor("blue"), tabler.getColor("primary", 0.8), tabler.getColor("green", 0.8)],
+            legend: {
+                show: false,
+            },
+        })).render();
+    });
+    // @formatter:on
+</script>
+
+
+  </body>
+</html>
+
+
+
+{% endblock %}

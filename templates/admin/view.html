@@ -49,8 +49,6 @@
             <td>{{ product.hide }}</td>
             <td>{{ product.bestseller }}</td>
             <td>
-             <a href="{% url 'aeditproduct' product.ProductID %}" class="btn btn-primary">Edit</a>
-              <a href="{% url 'adeleteproduct' product.ProductID %}" class="btn btn-danger">Delete</a>
             </td>
           </tr>
         {% endfor %}

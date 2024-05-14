@@ -15,8 +15,9 @@
 
 </style>
 
-<aside class="col-md-3" style="margin-left: -100px;margin-top: 100px;margin-right: 80px;">
+<aside class="col-md-3" style="margin-left: -100px;margin-top: 90px;margin-right: 80px;">
     <!--   SIDEBAR   -->
+    <strong><h2>Hello, {{request.user|title}}</h2></strong><br>
     <ul class="list-group">
         <a class="list-group-item " href="{% url 'customer_orders' %}"> My Orders </a>
         <a class="list-group-item " href="{% url 'edit_profile' %}"> Edit Profile </a>

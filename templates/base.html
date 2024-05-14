@@ -1,4 +1,5 @@
 {% load static %}
+
 <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css">
@@ -6,8 +7,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
+    {% comment %} <link rel="stylesheet" href="{% static 'css/style.css' %}"> {% endcomment %}
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.6/css/jquery.dataTables.min.css">
+    
+
 
     <style>
       /* Custom CSS for header */
@@ -83,48 +86,7 @@
         </defs>
       </svg>
 
-<div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="offcanvasCart" aria-labelledby="My Cart">
-    <div class="offcanvas-header justify-content-center">
-      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-    </div>
-    <div class="offcanvas-body">
-      <div class="order-md-last">
-        <h4 class="d-flex justify-content-between align-items-center mb-3">
-          <span class="text-primary">Your cart</span>
-          <span class="badge bg-primary rounded-pill">3</span>
-        </h4>
-        <ul class="list-group mb-3">
-          <li class="list-group-item d-flex justify-content-between lh-sm">
-            <div>
-              <h6 class="my-0">Growers cider</h6>
-              <small class="text-body-secondary">Brief description</small>
-            </div>
-            <span class="text-body-secondary">$12</span>
-          </li>
-          <li class="list-group-item d-flex justify-content-between lh-sm">
-            <div>
-              <h6 class="my-0">Fresh grapes</h6>
-              <small class="text-body-secondary">Brief description</small>
-            </div>
-            <span class="text-body-secondary">$8</span>
-          </li>
-          <li class="list-group-item d-flex justify-content-between lh-sm">
-            <div>
-              <h6 class="my-0">Heinz tomato ketchup</h6>
-              <small class="text-body-secondary">Brief description</small>
-            </div>
-            <span class="text-body-secondary">$5</span>
-          </li>
-          <li class="list-group-item d-flex justify-content-between">
-            <span>Total (USD)</span>
-            <strong>$20</strong>
-          </li>
-        </ul>
 
-        <button class="w-100 btn btn-primary btn-lg" type="submit">Continue to checkout</button>
-      </div>
-    </div>
-  </div>
 
 <header>
     <div class="container-fluid">
@@ -132,7 +94,7 @@
         
         <div class="col-sm-4 col-lg-3 text-center text-sm-start">
           <div class="main-logo">
-            <a href="{% url "index" %}">
+            <a href="{% url 'index' %}">
               <img src="{% static 'assets/logo1.png' %}" alt="logo" class="img-fluid" style="height:100px;width:200px">
             </a>
           </div>
@@ -141,13 +103,13 @@
         <div class="col-sm-6 offset-sm-2 offset-md-0 col-lg-5 d-none d-lg-block" >
           <div class="search-bar row bg-light p-2 my-2 rounded-4" style="height:60px;align-items:center">
             <div class="col-11 col-md-7">
-              <form id="search-form" class="text-center" action="index.html" method="post">
-                <input type="text" class="form-control border-0 bg-transparent" style="width:550px;" placeholder="Search for more than 20,000 products" />
-              </form>
+              <form id="search-form" class="text-center" action="{% url 'search' %}" method="get">
+                <input type="text" name="q" class="form-control border-0 bg-transparent" style="width:550px;" placeholder="Search for more than 20,000 products" value="{{ request.GET.q }}" />
+                <button class="btn" type="submit" style="width: 20px;"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="margin-left:400px;margin-top:-30px"><path fill="currentColor" d="M21.71 20.29L18 16.61A9 9 0 1 0 16.61 18l3.68 3.68a1 1 0 0 0 1.42 0a1 1 0 0 0 0-1.39ZM11 18a7 7 0 1 1 7-7a7 7 0 0 1-7 7Z"/></svg></button>
+            </form>
+            
             </div>
-            <div class="col-3">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="margin-left:200px;margin-top:-6px"><path fill="currentColor" d="M21.71 20.29L18 16.61A9 9 0 1 0 16.61 18l3.68 3.68a1 1 0 0 0 1.42 0a1 1 0 0 0 0-1.39ZM11 18a7 7 0 1 1 7-7a7 7 0 0 1-7 7Z"/></svg>
-            </div>
+            
           </div>
         </div>
         
@@ -188,7 +150,7 @@
             </li>
           </ul>
 
-          <div class="cart text-end d-none d-lg-block dropdown">
+          <div class="cart text-end d-none d-lg-block ">
             <button class="border-0 bg-transparent d-flex flex-column gap-2 lh-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCart" aria-controls="offcanvasCart">
               <span class="fs-6 text-muted dropdown-toggle">My Cart</span>
               <span class="cart-total fs-5 fw-bold">$1290.00</span>
@@ -219,43 +181,20 @@
                   <li class="nav-item active">
                     <a href="#women" class="nav-link">Home</a>
                   </li>
-                  <li class="nav-item dropdown">
-                    <a href="#men" class="nav-link">Beauty</a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="#kids" class="nav-link">Face</a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="#accessories" class="nav-link">Hair</a>
-                  </li>
-                  <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" role="button" id="pages" data-bs-toggle="dropdown" aria-expanded="false">Pages</a>
-                    <ul class="dropdown-menu" aria-labelledby="pages">
-                      <li><a href="about.html" class="dropdown-item">About Us <span class="badge bg-success text-dark ms-2">PRO</span></a></li>
-                      <li><a href="shop.html" class="dropdown-item">Shop <span class="badge bg-success text-dark ms-2">PRO</span></a></li>
-                      <li><a href="single-product.html" class="dropdown-item">Single Product <span class="badge bg-success text-dark ms-2">PRO</span></a></li>
-                      <li><a href="cart.html" class="dropdown-item">Cart <span class="badge bg-success text-dark ms-2">PRO</span></a></li>
-                      <li><a href="checkout.html" class="dropdown-item">Checkout <span class="badge bg-success text-dark ms-2">PRO</span></a></li>
-                      <li><a href="blog.html" class="dropdown-item">Blog <span class="badge bg-success text-dark ms-2">PRO</span></a></li>
-                      <li><a href="single-post.html" class="dropdown-item">Single Post <span class="badge bg-success text-dark ms-2">PRO</span></a></li>
-                      <li><a href="styles.html" class="dropdown-item">Styles <span class="badge bg-success text-dark ms-2">PRO</span></a></li>
-                      <li><a href="contact.html" class="dropdown-item">Contact <span class="badge bg-success text-dark ms-2">PRO</span></a></li>
-                      <li><a href="thank-you.html" class="dropdown-item">Thank You <span class="badge bg-success text-dark ms-2">PRO</span></a></li>
-                      <li><a href="account.html" class="dropdown-item">My Account <span class="badge bg-success text-dark ms-2">PRO</span></a></li>
-                      <li><a href="404.html" class="dropdown-item">404 Error <span class="badge bg-success text-dark ms-2">PRO</span></a></li>
-                    </ul>
-                  </li>
-                  <li class="nav-item">
-                    <a href="#accessories" class="nav-link">Makeup</a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="#accessories" class="nav-link">Baby</a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="#accessories" class="nav-link">Gift Packs</a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="#brand" class="nav-link">All Products</a>
+                  {% for category in categories %}
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    {{ category.name }}
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    {% for subcategory in category.subcategory_set.all %}
+                        <li><a class="dropdown-item" href="{% url 'collections' subcategory.name %}">{{ subcategory.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endfor %}
+                  <li class="nav-item"  style="background-color: rgb(231, 174, 94);">
+                    <strong><a href="{% url 'shop' %}" class="nav-link">Shop</a></strong>
                   </li>
                   <li class="nav-item">
                     <a href="{%url 'seller_login' %}" class="nav-link">Become a seller</a>
@@ -284,22 +223,17 @@
     </div>
   </header>
 
-  <script src="js/jquery-1.11.0.min.js"></script>
+  <script src="{% static 'js/jquery-2.0.0.min.js' %}"></script>
   <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
-  <script src="js/plugins.js"></script>
-  <script src="js/script.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    var cartDropdownBtn = document.getElementById('cartDropdownBtn');
-    var offcanvasCart = new bootstrap.Offcanvas(document.getElementById('offcanvasCart'));
+  <script src="{% static 'js/script.js' %}"></script>
 
-    cartDropdownBtn.addEventListener('click', function () {
-      offcanvasCart.toggle();
-    });
-  });
-</script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+      $(document).ready(function(){
+          $('.dropdown-toggle').dropdown();
+      });
+  </script>
   
 {% block content %}{% endblock content %}
 </body>

@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <aside class="col-lg-3" style="background-color: #f8f9fa; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);position: fixed;width: 250px;">
+            <form method="get" action="{% url 'shop' %}" style="margin-bottom: 20px;">
+                <div class="filter-group">
+                    <h4>Filters</h4>
+                    <hr>
+                    <strong>Category:</strong><br>
+                    {% for subcategory in subcategory %}
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="{{ subcategory.name }}" name="category" value="{{ subcategory.name }}">
+                            <label class="form-check-label" for="{{ subcategory.name }}">{{ subcategory.name }}</label>
+                        </div>
+                    {% endfor %}
+                </div><br>
+                
+                <div class="filter-group">
+                    <strong>Price:</strong>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="below_300" name="max_price" value="300">
+                        <label class="form-check-label" for="below_500">Below 300</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="300_750" name="min_price" value="300">
+                        <label class="form-check-label" for="500_1000">300 - 750
+                            </label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="750_1000" name="min_price" value="750">
+                        <label class="form-check-label" for="500_1000">750 - 1000</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="above_1000" name="min_price" value="1000">
+                        <label class="form-check-label" for="above_1000">Above 1000</label>
+                    </div>
+                </div>
+                <br>
+                <button type="submit" class="btn btn-primary" style="background-color: #007bff; border-color: #007bff;">Apply Filters</button>
+            </form>
+        </aside>
+
+        <div class="col-lg-9" style="margin-left: 300px;">
+            <div class="row">
+                {% for item in products %}
+                <div class="col-lg-3 col-md-4 mb-5">
+                    <div class="card border-0 rounded-3 shadow" style="width: 200px;">
+                        <img class="card-img-top img-fluid" src="{{ item.image1.url }}" alt="{{ item.ProductName }}" style="max-height: 200px;max-width:200px">
+                        <div class="card-body d-flex flex-column align-items-center">
+                          <p class="card-text">
+                            <span style="color: gray; font-size: 11px;">{{ item.SubCategoryID }}</span>
+                        </p>
+                            <a style="text-decoration: none; color: black;" href="{% url 'productsview' item.SubCategoryID item.ProductName %}">
+                                <p class="card-title text-center">{{ item.ProductName }}</p>
+                            </a>
+                            
+                            <p class="card-text">
+                                <span style="color: black; font-size: 15px;">Rs. {{ item.selling_price }}</span>
+                                <span style="margin-left: 10px; color: gray;"><s>Rs. {{ item.original_Price }}</s></span>
+                            </p>
+                            <a href="{% url 'productsview' item.SubCategoryID item.ProductName %}" class="btn btn-dark mt-auto mx-auto" style="margin-top: 15px;width:100%;font-size: smaller;font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;color: #bdb9b9;">View Details</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+    </div>
+</div>
+{% endblock %}

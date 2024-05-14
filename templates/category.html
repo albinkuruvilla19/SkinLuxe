@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}BagEasy.in{% endblock title %}BagEasy.in
+
+
+{% block content %}
+<style>
+    .card:hover {
+        transform: scale(1.05);
+        transition: transform 0.3s ease-in-out;
+    }
+  
+    .card-title {
+        transition: color 0.3s ease-in-out;
+    }
+  
+    .card:hover .card-title {
+        color: rgb(114, 10, 10); /* Change the color to your preferred hover color */
+    }
+  </style>
+
+
+<section class="py-5 text-center container" style="margin-top: 50px;">
+    <div class="row">
+        <div class="col-lg-6 col-md-8 mx-auto">
+            <h3>All Collections</h3> <hr>
+        </div>
+    </div>
+</section>
+
+<section class="my-2">
+    <div class="container">
+        <div class="row">
+            {% for item in category %}
+            <div class="col-lg-3 col-md-4 mb-5 mr-3">
+                <div class="card border-0" style="width: 20rem;">
+                    <img class="card-img-top img-fluid" src="{{item.image.url}}" alt="{{item.name}}">
+                    <a href="{% url 'collections' item.name %}">
+                        <div class="card-body">
+                            <h5 class="card-title text-center" style="color: dimgray;">{{item.name}}</h5>
+                          </div>
+                        </div>
+                    </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock content %}
