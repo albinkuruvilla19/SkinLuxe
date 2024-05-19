@@ -64,11 +64,14 @@ class AdminLoginForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput)
 
 class ProductForm(forms.ModelForm):
+    add_quantity = forms.IntegerField(required=False, min_value=0, label='Add Quantity')
     class Meta:
         model = Product
         fields = ['SubCategoryID','ProductName','Description','Ingredients','original_Price','selling_price','StockQuantity','reorderlevel','bestseller','image1','image2','hide']
 
-
+    def __init__(self, *args, **kwargs):
+        super(ProductForm, self).__init__(*args, **kwargs)
+        self.fields['StockQuantity'].widget.attrs['readonly'] = True  # Make current stock quantity read-only
 
 class AddressForm(forms.ModelForm):
     class Meta:

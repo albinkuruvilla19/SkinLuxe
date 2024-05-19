@@ -141,31 +141,28 @@
                             </thead>
                             
                             <tbody>
-                                {% for order in recent_orders %}
-                                <tr>
-                                    <td style="padding: 8px; text-align: left; border-bottom: 1px solid #ddd;">{{ order.id }}</td>
-                                    <td style="padding: 8px; text-align: left; border-bottom: 1px solid #ddd;">{{ order.user.username }}</td>
-                                    <td style="padding: 8px; text-align: left; border-bottom: 1px solid #ddd;">
-                                        <ul>
-                                            {% for order_product in order.orderproduct_set.all %}
-                                                <li>{{ order_product.product.ProductName }} - {{ order_product.quantity }}</li>
-                                            {% endfor %}
-                                        </ul>
-                                    </td>
-                                    <td style="padding: 8px; text-align: left; border-bottom: 1px solid #ddd;">{{ order.total_amount }}</td>
-                                    <td style="padding: 8px; text-align: left; border-bottom: 1px solid #ddd;">{{ order.shipping_address }}</td>
-                                    <td style="padding: 8px; text-align: left; border-bottom: 1px solid #ddd;">{{ order.created_at }}</td>
-                                    <td style="padding: 8px; text-align: left; border-bottom: 1px solid #ddd;">
-                                        <select id="statusSelect{{ order.id }}">
-                                            <option value="processing" {% if order.pstatus == 'processing' %} selected {% endif %}>Processing</option>
-                                            <option value="shipped" {% if order.pstatus == 'shipped' %} selected {% endif %}>Shipped</option>
-                                            <option value="delivered" {% if order.pstatus == 'delivered' %} selected {% endif %}>Delivered</option>
-                                        </select>
-                                    </td>
-                                    <td style="padding: 8px; text-align: left; border-bottom: 1px solid #ddd;">
-                                        <button class="btn btn-outline-warning" onclick="updateStatus({{ order.id }})">Update</button>
-                                    </td>
-                                </tr>
+                                {% csrf_token %}
+                                {% for order_product in recent_orders %}
+                                    <tr>
+                                        <td style="padding: 8px; text-align: left; border-bottom: 1px solid #ddd;">{{ order_product.order.id }}</td>
+                                        <td style="padding: 8px; text-align: left; border-bottom: 1px solid #ddd;">{{ order_product.order.user.username }}</td>
+                                        <td style="padding: 8px; text-align: left; border-bottom: 1px solid #ddd;">
+                                            {{ order_product.product.ProductName }} - {{ order_product.quantity }}
+                                        </td>
+                                        <td style="padding: 8px; text-align: left; border-bottom: 1px solid #ddd;">{{ order_product.total_cost }}</td>
+                                        <td style="padding: 8px; text-align: left; border-bottom: 1px solid #ddd;">{{ order_product.order.shipping_address }}</td>
+                                        <td style="padding: 8px; text-align: left; border-bottom: 1px solid #ddd;">{{ order_product.order.created_at }}</td>
+                                        <td style="padding: 8px; text-align: left; border-bottom: 1px solid #ddd;">
+                                            <select id="statusSelect{{ order_product.id }}">
+                                                <option value="processing" {% if order_product.pstatus == 'processing' %} selected {% endif %}>Processing</option>
+                                                <option value="shipped" {% if order_product.pstatus == 'shipped' %} selected {% endif %}>Shipped</option>
+                                                <option value="delivered" {% if order_product.pstatus == 'delivered' %} selected {% endif %}>Delivered</option>
+                                            </select>
+                                        </td>
+                                        <td style="padding: 8px; text-align: left; border-bottom: 1px solid #ddd;">
+                                            <button class="btn btn-outline-warning" onclick="updateStatus({{ order_product.id }})">Update</button>
+                                        </td>
+                                    </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
@@ -223,15 +220,14 @@
 
 
      <script>
-        function updateStatus(orderId) {
-            var selectedStatus = document.getElementById("statusSelect" + orderId).value;
+        function updateStatus(orderProductId) {
+            var selectedStatus = document.getElementById("statusSelect" + orderProductId).value;
             // Send the selected status to your backend for updating the order status
-            // You can use AJAX or any other method to send the data to your server
             $.ajax({
                 url: '/update_status/',
                 method: 'POST',
                 data: {
-                    order_id: orderId,
+                    order_product_id: orderProductId,
                     status: selectedStatus,
                     csrfmiddlewaretoken: '{{ csrf_token }}'  // Include CSRF token for CSRF protection
                 },
@@ -244,6 +240,7 @@
                 error: function(error) {
                     // Handle error
                     console.error(error);
+                    alert('Failed to update status.');
                 }
             });
         }

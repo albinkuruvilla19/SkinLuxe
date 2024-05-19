@@ -150,9 +150,19 @@ class Order(models.Model):
         return f"Order {self.id}"
 
 class OrderProduct(models.Model):
+    STATUS_CHOICES = (
+        ('processing', 'Processing'),
+        ('shipped', 'Shipped'),
+        ('delivered', 'Delivered'),
+    )
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
+    pstatus = models.CharField(max_length=20, choices=STATUS_CHOICES, default='processing')
 
     def __str__(self):
         return f"{self.product.ProductName} - {self.quantity}"
+    
+    @property
+    def total_cost(self):
+        return self.product.selling_price*self.quantity

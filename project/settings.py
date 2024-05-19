@@ -145,3 +145,15 @@ CKEDITOR_UPLOAD_PATH = 'uploads/'
 
 RAZOR_KEY_ID = 'rzp_test_Es0ovzWvtwwh2I'
 RAZOR_KEY_SECRET = 'mYbczN43G02hhlJeB0VICsvu'
+
+
+# settings.py
+from django.contrib.messages import constants as messages
+
+MESSAGE_TAGS = {
+    messages.DEBUG: 'debug',
+    messages.INFO: 'info',
+    messages.SUCCESS: 'success',
+    messages.WARNING: 'warning',
+    messages.ERROR: 'error',
+}

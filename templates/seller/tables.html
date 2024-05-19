@@ -58,8 +58,8 @@
                                             <th>Products</th>
                                             <th>Total Amount</th>
                                             <th>Shipping Address</th>
+                                            <th>Ordered On</th>
                                             <th>Status</th>
-                                            <th>Update</th>
                                         </tr>
                                     </thead>
                                     <tfoot>
@@ -69,34 +69,29 @@
                                             <th>Products</th>
                                             <th>Total Amount</th>
                                             <th>Shipping Address</th>
+                                            <th>Ordered On</th>
                                             <th>Status</th>
-                                            <th>Update</th>
+                                            
                                         </tr>
                                     </tfoot>
                                     <tbody>
-                                        {% for order in orders %}
+                                        
+                                        {% for order in seller_order_products %}
                                         <tr>
-                                            <td>{{ order.id }}</td>
-                                            <td>{{ order.user.username }}</td>
+                                            <td>{{ order.order.id }}</td>
+                                            <td>{{ order.order.user.username }}</td>
                                             <td>
-                                                <ul>
-                                                    {% for order_product in order.orderproduct_set.all %}
-                                                        <li>{{ order_product.product.ProductName }} - {{ order_product.quantity }}</li>
-                                                    {% endfor %}
-                                                </ul>
+                                                {{ order.product.ProductName }} - {{ order.quantity }}
                                             </td>
-                                            <td>{{ order.total_amount }}</td>
-                                            <td>{{ order.shipping_address }}</td>
-                                            <td style="padding: 8px; text-align: left; border-bottom: 1px solid #ddd;">
-                                                <select id="statusSelect{{ order.id }}">
-                                                    <option value="processing" {% if order.pstatus == 'processing' %} selected {% endif %}>Processing</option>
-                                                    <option value="shipped" {% if order.pstatus == 'shipped' %} selected {% endif %}>Shipped</option>
-                                                    <option value="delivered" {% if order.pstatus == 'delivered' %} selected {% endif %}>Delivered</option>
-                                                </select>
-                                            </td>
-                                            <td style="padding: 8px; text-align: left; border-bottom: 1px solid #ddd;">
-                                                <button class="btn btn-outline-warning" onclick="updateStatus({{ order.id }})">Update</button>
-                                            </td>
+                                            <td>{{ order.order.total_amount }}</td>
+                                            <td>{{ order.order.shipping_address }}</td>
+                                            <td style="padding: 8px; text-align: left; border-bottom: 1px solid #ddd;">{{ order.order.created_at }}</td>
+                                            <td style="padding: 8px; text-align: left; border-bottom: 1px solid #ddd;"
+    class="{% if order.pstatus == 'delivered' %}text-success{% elif order.pstatus == 'shipped' %}text-primary{% elif order.pstatus == 'processing' %}text-danger{% endif %}">
+    {{ order.pstatus }}
+</td>
+
+                                            
                                             
                                         </tr>
                                         {% endfor %}
@@ -149,6 +144,7 @@
 
     <!-- Page level custom scripts -->
     <script src="{% static 'js/demo/datatables-demo.js' %}"></script>
+
 
 </body>
 

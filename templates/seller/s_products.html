@@ -56,8 +56,8 @@
                 <h5 class="card-title">{{ product.ProductName }}</h5>
             </div>
             <ul class="list-group list-group-flush">
-                <li class="list-group-item">Stock Quantity: {{ product.StockQuantity }}</li>
-                <li class="list-group-item">Selling Price: ${{ product.selling_price }}</li>
+                <li class="list-group-item">Stock Quantity: <strong>{{ product.StockQuantity }}</strong></li>
+                <li class="list-group-item">Selling Price: <strong>₹{{ product.selling_price }}</strong></li>
             </ul>
             <div class="card-body">
                 <a href="{% url 'editproduct' product.ProductID %}" class="card-link">Edit</a>

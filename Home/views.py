@@ -14,6 +14,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db.models.functions import ExtractMonth
 from django.db.models import Count,Sum
 from django.contrib.auth.decorators import user_passes_test
+from django.db.models import Q
 
 
 
@@ -295,8 +296,9 @@ def edit_customer_profile(request):
 
 #customer orders
 def customer_orders(request):
-    orders = Order.objects.filter(user=request.user)  
+    orders = OrderProduct.objects.filter(order__user=request.user).order_by('-order__id')
     return render(request, 'c_order.html', {'orders': orders})
+
 
 #customer addresses
 def address(request):
@@ -335,7 +337,7 @@ def seller_dashboard(request):
     revenue = seller_order_products.aggregate(total_amount=Sum("product__selling_price"))
 
     # Count total orders for the seller
-    total_orders_count = seller_orders.count()
+    total_orders_count = seller_order_products.count()
 
     # Get all categories
     categories = SubCategory.objects.all()
@@ -353,7 +355,8 @@ def seller_dashboard(request):
         product.percentage_of_total_quantity_sold = (product.total_quantity_sold / total_quantity_sold) * 100 if total_quantity_sold != 0 else 0
 
     # Get recent orders for the seller
-    recent_orders = seller_orders.order_by('-created_at')[:5]
+    recent_orders = seller_order_products.filter(Q(pstatus="processing") | Q(pstatus="shipped"))
+
 
     return render(request, 'seller/index.html', {
         "revenue": revenue,
@@ -362,7 +365,7 @@ def seller_dashboard(request):
         "monthly_revenue": monthly_revenue,
         "products_count": products_count,
         'top_selling_products': top_selling_products,
-        "recent_orders":recent_orders
+        "recent_orders":recent_orders,
     })
 
 #seller products view
@@ -378,31 +381,10 @@ def seller_products(request):
 def seller_orders(request):
     # Assuming the logged-in user is a seller
     logged_in_seller = request.user.seller_profile
-    # Retrieve products sold by the logged-in seller
-    seller_products = Product.objects.filter(SellerID=logged_in_seller)
-    # Retrieve orders containing those products and sort them by creation date
-    seller_orders = Order.objects.filter(products__in=seller_products).order_by('-created_at')
-    # Create a dictionary to store orders by their IDs
-    orders_dict = defaultdict(Order)
-    # Iterate over each order and filter products
-    for order in seller_orders:
-        try:
-            # If the order already exists in the dictionary, retrieve it; otherwise, use the current order
-            current_order = orders_dict[order.id] if order.id in orders_dict else order
-            # Filter the products of the order based on the seller
-            seller_products_in_order = order.products.filter(SellerID=logged_in_seller)
-            # Update the products for the order
-            current_order.products.add(*seller_products_in_order)
-            # Store the updated order in the dictionary
-            orders_dict[order.id] = current_order
-        except ObjectDoesNotExist:
-            # Handle the case where the product doesn't exist in the order
-            pass
     
-    # Extract the values (orders) from the dictionary
-    unique_orders = list(orders_dict.values())
-    
-    return render(request, 'seller/tables.html', {'orders': unique_orders})
+    # Filter orders that contain products associated with the logged-in seller
+    seller_order_products = OrderProduct.objects.filter(product__SellerID=logged_in_seller)
+    return render(request, 'seller/tables.html',{"seller_order_products" : seller_order_products})
 
 
 #seller add product
@@ -425,15 +407,19 @@ def add_product(request):
 #seller editproduct
 @login_required
 def edit_product(request, product_id):
-    product = Product.objects.get(ProductID=product_id)
+    product = get_object_or_404(Product, ProductID=product_id)
 
     if request.method == 'POST':
         form = ProductForm(request.POST, request.FILES, instance=product)
         if form.is_valid():
+            add_quantity = form.cleaned_data.get('add_quantity', 0)
+            if add_quantity:
+                product.StockQuantity += add_quantity
             form.save()
             return redirect('seller_products')  
     else:
         form = ProductForm(instance=product)
+    
     return render(request, 'seller/update.html', {'form': form})
 
 #seller delete product
@@ -450,19 +436,30 @@ def delete_product(request, product_id):
     return render(request, 'seller/delete_product.html', {'product': product})
 
 #seller update order status
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+from .models import OrderProduct
+
+@csrf_exempt  # This is needed because we're making a POST request via AJAX, which requires CSRF protection
 def update_order_status(request):
     if request.method == 'POST':
-        order_id = request.POST.get('order_id')
+        order_product_id = request.POST.get('order_product_id')
         status = request.POST.get('status')
-        try:
-            order = Order.objects.get(pk=order_id)
-            order.pstatus = status
-            order.save()
-            return JsonResponse({'status': 'Updated Successfully'}, status=200)
-        except Order.DoesNotExist:
-            return JsonResponse({'success': False, 'message': 'Order does not exist.'})
+
+        # Find the OrderProduct instance by its ID
+        order_product = get_object_or_404(OrderProduct, id=order_product_id)
+
+        # Update the pstatus field
+        order_product.pstatus = status
+        order_product.save()
+
+        # Return a success response
+        return JsonResponse({'message': 'Status updated successfully.'})
     else:
-        return JsonResponse({'success': False, 'message': 'Invalid request method.'})
+        return JsonResponse({'error': 'Invalid request method.'}, status=400)
+
 
 
 #admin
@@ -551,4 +548,26 @@ def admin_orders(request):
     orders = Order.objects.all()
     return render(request,"admin/admin_orders.html",{'orders':orders})
 
+
+#change password
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from django.contrib import messages
+
+@login_required
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important to keep the user logged in
+            messages.success(request, 'Your password was successfully updated!')
+            return redirect('index')  # Redirect to the home page
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, 'change_password.html', {'form': form})
 

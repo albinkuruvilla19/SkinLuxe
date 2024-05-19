@@ -35,6 +35,7 @@ urlpatterns = [
     path('c_orders/', views.customer_orders, name='customer_orders'),
     path('address/',views.address,name="address"),
     path('address/delete/<int:address_id>/', views.delete_address, name='delete_address'),
+    path('password/change/', views.change_password, name='change_password'),
 
 
     #SELLER DASHBOARD

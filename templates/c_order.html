@@ -72,27 +72,23 @@
                                             <th>Total Amount</th>
                                             <th>Shipping Address</th>
                                             <th>Purchased at</th>
-                                            <th>Details</th>
+                                            <th>Status</th>
                                         </tr>
                                     </tfoot>
                                     <tbody>
-                                        {% for order in orders %}
-                                        <tr>
-                                            <td>{{ order.id }}</td>
-                                            <td>
-                                                <ul>
-                                                    {% for order_product in order.orderproduct_set.all %}
-                                                        <li>{{ order_product.product.ProductName }} - {{ order_product.quantity }}</li>
-                                                    {% endfor %}
-                                                </ul>
-                                            </td>
-                                            <td>{{ order.total_amount }}</td>
-                                            <td>{{ order.shipping_address }}</td>
-                                            <td>{{ order.created_at }}</td>
-                                            <td><a href="">View details</a></td>
-                                            
-                                        </tr>
-                                        {% endfor %}
+                                        {% for order_product in orders %}
+    <tr>
+        <td>{{ order_product.order.id }}</td>
+        <td>
+            {{ order_product.product.ProductName }} - {{ order_product.quantity }}
+        </td>
+        <td>{{ order_product.order.total_amount }}</td>
+        <td>{{ order_product.order.shipping_address }}</td>
+        <td>{{ order_product.order.created_at }}</td>
+        <td><a href="">{{ order_product.pstatus }}</a></td>
+    </tr>
+{% endfor %}
+
                                     </tbody>
                                 </table>
                             </div>

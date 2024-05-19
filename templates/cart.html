@@ -30,8 +30,12 @@
                         <td>{{ item.products.ProductName }}</td>
                         <td>₹{{ item.products.selling_price }}</td>
                         <td>
-                            <input type="number" min="1" value="{{ item.product_quantity }}" class="quantity-input" data-item-id="{{ item.id }}">
+                            <button type="button" onclick="decrementQuantity('{{ item.id }}')">-</button>
+                            <input type="number" value="{{ item.product_quantity }}" class="quantity-input" data-item-id="{{ item.id }}" readonly>
+                            <button type="button" onclick="incrementQuantity('{{ item.id }}')">+</button>
                         </td>
+                        
+                        
                         <td class="amnt">₹{{ item.total_cost }}</td>
                         <td>
                             <button class="btn btn-primary btn-sm update-quantity">Update</button>
@@ -104,6 +108,28 @@
             document.getElementById("net").innerHTML = "₹" + res.toFixed(2);
         }
     });
+
+    function decrementQuantity(itemId) {
+        const input = document.querySelector(`input[data-item-id="${itemId}"]`);
+        let currentValue = parseInt(input.value);
+        if (currentValue > 1) {
+            input.value = currentValue - 1;
+        }
+    }
+    
+    function incrementQuantity(itemId) {
+        const input = document.querySelector(`input[data-item-id="${itemId}"]`);
+        let currentValue = parseInt(input.value);
+        if (currentValue < 10) {
+            input.value = currentValue + 1;
+        }
+    }
+    
+    function updateQuantity(itemId, newQuantity) {
+        // Implement the logic to update the quantity in your backend or application state
+        console.log(`Updated item ${itemId} to quantity ${newQuantity}`);
+    }
+    
 </script>
 
 {% endblock content %}
