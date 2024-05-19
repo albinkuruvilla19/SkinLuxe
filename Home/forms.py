@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import CustomUser,Seller,Product,Customer,Address
+from .models import CustomUser,Seller,Product,Customer,Address,Category,SubCategory
 
 class CustomerSignUpForm(UserCreationForm):
     fname = forms.CharField(max_length=100)
@@ -63,14 +63,14 @@ class AdminLoginForm(forms.Form):
     username = forms.CharField(max_length=150)
     password = forms.CharField(widget=forms.PasswordInput)
 
-class ProductForm(forms.ModelForm):
+class ProductForm2(forms.ModelForm):
     add_quantity = forms.IntegerField(required=False, min_value=0, label='Add Quantity')
     class Meta:
         model = Product
         fields = ['SubCategoryID','ProductName','Description','Ingredients','original_Price','selling_price','StockQuantity','reorderlevel','bestseller','image1','image2','hide']
 
     def __init__(self, *args, **kwargs):
-        super(ProductForm, self).__init__(*args, **kwargs)
+        super(ProductForm2, self).__init__(*args, **kwargs)
         self.fields['StockQuantity'].widget.attrs['readonly'] = True  # Make current stock quantity read-only
 
 class AddressForm(forms.ModelForm):
@@ -84,8 +84,17 @@ class CustomerProfileForm(forms.ModelForm):
         model = Customer
         fields = ['fname', 'lname', 'email', 'phone']
 
-
-class ProductForm2(forms.ModelForm):
+class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['SubCategoryID','ProductName','Description','Ingredients','original_Price','selling_price','SellerID','StockQuantity','reorderlevel','bestseller','image1','image2','hide']
+        fields = ['SubCategoryID','ProductName','Description','Ingredients','original_Price','selling_price','StockQuantity','reorderlevel','bestseller','image1','image2','hide']
+
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = ['name','status']
+
+class SubCategoryForm(forms.ModelForm):
+    class Meta:
+        model = SubCategory
+        fields = '__all__'

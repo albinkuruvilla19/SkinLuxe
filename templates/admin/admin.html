@@ -33,11 +33,16 @@
                       New Product Listings
                     </a>
                   </span>
-                  <a href="#" class="btn btn-primary d-none d-sm-inline-block" data-bs-toggle="modal" data-bs-target="#modal-report">
-                    <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
-                    Create new Categories
-                  </a>
+                  <span class="d-none d-sm-inline">
+                    <a href="{% url "add_category" %}" class="btn btn-primary">
+                      Add new Category
+                    </a>
+                  </span>
+                  <span class="d-none d-sm-inline">
+                    <a href="{% url "add_sub_category" %}" class="btn btn-danger">
+                      Add new SubCategory
+                    </a>
+                  </span>
                   <a href="#" class="btn btn-primary d-sm-none btn-icon" data-bs-toggle="modal" data-bs-target="#modal-report" aria-label="Create new report">
                     <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
@@ -87,9 +92,9 @@
                         <div class="font-weight-bold">
                           <span style="font-weight: bold;font-size: 20px;">{{products}}</span>
                         </div>
-                        <div class="text-muted">
+                        <a href="{% url "all_products" %}"><div class="text-muted">
                           <span style="font-size: 17px;">Products Listed</span>
-                        </div>
+                        </div></a>
                       </div>
                     </div>
                   </div>

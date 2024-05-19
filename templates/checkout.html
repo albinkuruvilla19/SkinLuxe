@@ -7,33 +7,142 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h1, h2, h4 {
+            color: #333;
+        }
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        h2 {
+            font-size: 1.5rem;
+            margin-top: 2rem;
+        }
+        h4 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+        table.order-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        table.order-table td {
+            padding: 1rem;
+            vertical-align: top;
+        }
+        table.order-table img {
+            max-width: 150px;
+            border-radius: 8px;
+        }
+        table.order-table .thin {
+            font-weight: normal;
+            color: #666;
+        }
+        select {
+            width: calc(100% - 130px); /* Adjust width to fit the button next to it */
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            background-color: #fff;
+            margin-right: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+        .address-row {
+            display: flex;
+            align-items: center;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-    <h1>Checkout</h1>
-    
-    <h2>Cart Items</h2>
-    <ul>
-        {% for item in cart_items %}
-            <li>{{ item.products.ProductName }} - Quantity: {{ item.product_quantity }} - Price: ${{ item.total_cost }}</li>
-        {% endfor %}
-    </ul>
-    
-    <h2>Shipping Address</h2>
-    <form method="POST" action="{% url 'checkout' %}">
-        {% csrf_token %}
-        <select name="shipping_address" required>
-            {% for address in addresses %}
-                <option value="{{ address.id }}">{{ address.first_name }} {{ address.last_name }}, {{ address.street }}, {{ address.city }}, {{ address.zip_code }}</option>
-            {% endfor %}
-        </select>
-        <button type="submit">Place Order</button>
-    </form>
+    <div class="container">
+        <h1>Checkout</h1>
+        
+        <h4>Cart Items</h4>
+        <table class='order-table'>
+            <tbody>
+                {% for item in cart_items %}
+                    <tr>
+                        <td style="width: 180px;">
+                            <img src='{{item.products.image1.url}}' alt='{{ item.products.ProductName }}'>
+                        </td>
+                        <td>
+                            <span class='thin'>{{ item.products.ProductName }}</span><br>
+                            <span>Quantity: {{ item.product_quantity }}</span><br>
+                            <span class='thin'><strong>Rs. {{ item.total_cost }}</strong></span>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <h2>Shipping Address</h2>
+        <form method="POST" action="{% url 'checkout' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="shipping_address">Select Address</label>
+                <div class="address-row">
+                    <select name="shipping_address" id="shipping_address" required>
+                        {% for address in addresses %}
+                            <option value="{{ address.id }}">{{ address.first_name }} {{ address.last_name }}, {{ address.street }}, {{ address.city }}, {{ address.zip_code }}</option>
+                        {% endfor %}
+                    </select>
+                    <a href="{% url "address" %}"><button type="button" class="btn-primary">Add new address</button></a>
+                </div>
+            </div>
+            <button type="submit">Place Order</button>
+        </form>
+    </div>
 </body>
 </html>
-
-</html>
-
-
-
-
-  {% endblock content %}
+{% endblock content %}

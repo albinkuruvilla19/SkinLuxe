@@ -115,6 +115,10 @@ class Product(models.Model):
     hide = models.BooleanField(default=False, help_text="0-show,1-hidden")
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
 
+
+    def is_below_reorder_level(self):
+        return self.StockQuantity < self.reorderlevel
+    
     def __str__(self):
         return self.ProductName
 

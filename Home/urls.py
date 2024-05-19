@@ -54,5 +54,8 @@ urlpatterns = [
     path('customers',views.Customers,name="customers"),
     path('sellers',views.sellers,name="sellers"),
     path('a_orders',views.admin_orders,name="admin_orders"),
+    path('addcategory/',views.add_category,name="add_category"),
+    path('addsubcategory/',views.add_sub_category,name="add_sub_category"),
+    path('all_products/',views.view_all_products,name="all_products"),
     
 ]

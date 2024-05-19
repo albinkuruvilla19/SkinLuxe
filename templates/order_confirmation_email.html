@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Order Confirmation</title>
+</head>
+<body>
+    <h1>Thank you for your order, {{ user.username }}!</h1>
+    <p>Order Number: {{ order.id }}</p>
+    <p>Order Date: {{ order.created_at }}</p>
+    <p>Order Status: {{ order.pstatus }}</p>
+    <p>Shipping Address:</p>
+    <p>{{ order.shipping_address.first_name }} {{ order.shipping_address.last_name }}</p>
+    <p>{{ order.shipping_address.street }}, {{ order.shipping_address.city }}, {{ order.shipping_address.state }} - {{ order.shipping_address.zip_code }}</p>
+    <p>Order Details:</p>
+    <ul>
+        {% for item in order_items %}
+            <li>{{ item.quantity }} x {{ item.product.ProductName }} - ${{ item.total_cost }}</li>
+        {% endfor %}
+    </ul>
+    <p>Total: ${{ order.total_amount }}</p>
+</body>
+</html>

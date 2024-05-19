@@ -23,7 +23,9 @@
 
           <div style="display: flex; align-items: center;" class="mb-3">
             <input class="form-check-input me-2" type="checkbox" value="" id="form2Example3" />
-            
+            <label class="form-check-label" for="form2Example3">
+              Remember me
+            </label>
           </div>
 
           <div class="text-center text-lg-start mt-4 pt-2">
@@ -33,6 +35,7 @@
           </div>
           {% if error_message %}
           <p style="color: red; margin-top: 10px;">{{ error_message }}</p>
+          <a href="{% url 'password_reset' %}"><i>Forgot Password?</i></a>
           {% endif %}
         </form>
       </div>

@@ -1,1 +1,24 @@
-<h1>Order placed successfully</h1>
+<!-- checkout_success.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Checkout Success{% endblock title %}
+
+{% block content %}
+<div class="container-fluid d-flex align-items-center justify-content-center success-container"style="min-height: 550px;">
+    <div class="text-center">
+        <img src="{% static 'images/success.png' %}" alt="Success Image" class="img-fluid success-image mb-4"style="width:100px">
+        <h1 class="success-heading">Order Placed Successfully!</h1>
+        <p class="success-message">Thank you for choosing our products. Your order has been successfully placed.</p>
+        <div class="row">
+            <div >
+                <div class="mt-4">
+                    <a href="{% url 'index' %}" class="btn btn-primary btn-block">Continue Shopping</a>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+{% endblock content %}
+

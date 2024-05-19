@@ -152,8 +152,8 @@
 
           <div class="cart text-end d-none d-lg-block ">
             <button class="border-0 bg-transparent d-flex flex-column gap-2 lh-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCart" aria-controls="offcanvasCart">
-              <span class="fs-6 text-muted dropdown-toggle">My Cart</span>
-              <span class="cart-total fs-5 fw-bold">$1290.00</span>
+              <a href="{% url "cart" %}" style="text-decoration: none;"><span class="fs-6 text-muted dropdown-toggle">My Cart</span></a>
+              
             </button>
           </div>
         </div>
@@ -179,7 +179,7 @@
               <div class="offcanvas-body d-flex justify-content-center">
                 <ul class="navbar-nav justify-content-end menu-list list-unstyled d-flex gap-md-3 mb-0" style=" margin: 0 auto;">
                   <li class="nav-item active">
-                    <a href="#women" class="nav-link">Home</a>
+                    <a href="/" class="nav-link">Home</a>
                   </li>
                   {% for category in categories %}
             <li class="nav-item dropdown">
@@ -202,14 +202,12 @@
 
                   {% if request.user.is_authenticated %} 
                   <li class="nav-item">
-                    <a href="#brand" class="nav-link">welcome,{{ request.user.username }}</a>
+                    <strong><a href="#brand" class="nav-link">welcome,{{ request.user.username }}</a></strong>
                   </li> 
                   <li class="nav-item">
-                    <a href="{% url 'logout' %}" class="nav-link">Logout</a>
+                    <strong><a href="{% url 'logout' %}" class="nav-link">Logout</a></strong>
                   </li> 
-                  <li class="nav-item">
-                    <a href="{% url 'cart' %}" class="nav-link">Cart</a>
-                  </li> 
+                  
                   {% endif %}
                 </ul>
               
@@ -222,7 +220,7 @@
       </div>
     </div>
   </header>
-
+  
   <script src="{% static 'js/jquery-2.0.0.min.js' %}"></script>
   <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
@@ -236,4 +234,5 @@
   </script>
   
 {% block content %}{% endblock content %}
+{% include 'footer.html' %}
 </body>

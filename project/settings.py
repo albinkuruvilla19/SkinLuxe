@@ -157,3 +157,18 @@ MESSAGE_TAGS = {
     messages.WARNING: 'warning',
     messages.ERROR: 'error',
 }
+
+
+# settings.py
+
+# For development
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# For production
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'skinluxe717@gmail.com'
+EMAIL_HOST_PASSWORD = 'bjgzfdptgprxqhwf'
+DEFAULT_FROM_EMAIL = 'skinluxe717@gmail.com'

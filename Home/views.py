@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404, render,redirect
 from django.contrib.auth import authenticate,logout
 from django.contrib.auth import login as auth_login
 from django.contrib import messages
-from .forms import CustomerSignUpForm, SellerSignUpForm,CustomerLoginForm, SellerLoginForm,ProductForm,CustomerProfileForm,ProductForm2,AddressForm
+from .forms import CustomerSignUpForm, SellerSignUpForm,CustomerLoginForm, SellerLoginForm,ProductForm,CustomerProfileForm,ProductForm2,AddressForm,CategoryForm,SubCategoryForm
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from collections import defaultdict
@@ -202,7 +202,7 @@ def viewcart(request):
          cart = Cart.objects.filter(user=request.user, checked_out=False)
          return render(request, 'cart.html', {"cart": cart})
     else:
-        return redirect("home")
+        return redirect("index")
 
 #remove items from cart
 def removecart(request,cid):
@@ -264,7 +264,7 @@ def checkout(request):
         order.total_amount = total_amount
         order.pstatus = "processing"
         order.save()
-        
+        send_order_confirmation_email(order)
         messages.success(request, "Your order has been placed successfully!")
         return redirect('order_confirmation', order_id=order.id)
 
@@ -332,6 +332,8 @@ def seller_dashboard(request):
     seller_order_products = OrderProduct.objects.filter(product__SellerID=logged_in_seller)
     seller_orders = Order.objects.filter(orderproduct__in=seller_order_products)
     products_count = Product.objects.filter(SellerID=logged_in_seller).count()
+    seller_products = Product.objects.filter(SellerID=logged_in_seller)
+    low_stock_products = [product for product in seller_products if product.is_below_reorder_level()]
     
     # Calculate revenue for the seller
     revenue = seller_order_products.aggregate(total_amount=Sum("product__selling_price"))
@@ -366,13 +368,13 @@ def seller_dashboard(request):
         "products_count": products_count,
         'top_selling_products': top_selling_products,
         "recent_orders":recent_orders,
+        "low_stock":low_stock_products
     })
 
 #seller products view
 def seller_products(request):
     # Assuming the logged-in user is a seller
     logged_in_seller = request.user.seller_profile
-
     # Retrieve all products associated with the logged-in seller
     seller_products = Product.objects.filter(SellerID=logged_in_seller)
     return render(request,'seller/s_products.html',{'products':seller_products})
@@ -381,6 +383,7 @@ def seller_products(request):
 def seller_orders(request):
     # Assuming the logged-in user is a seller
     logged_in_seller = request.user.seller_profile
+    
     
     # Filter orders that contain products associated with the logged-in seller
     seller_order_products = OrderProduct.objects.filter(product__SellerID=logged_in_seller)
@@ -410,7 +413,7 @@ def edit_product(request, product_id):
     product = get_object_or_404(Product, ProductID=product_id)
 
     if request.method == 'POST':
-        form = ProductForm(request.POST, request.FILES, instance=product)
+        form = ProductForm2(request.POST, request.FILES, instance=product)
         if form.is_valid():
             add_quantity = form.cleaned_data.get('add_quantity', 0)
             if add_quantity:
@@ -418,7 +421,7 @@ def edit_product(request, product_id):
             form.save()
             return redirect('seller_products')  
     else:
-        form = ProductForm(instance=product)
+        form = ProductForm2(instance=product)
     
     return render(request, 'seller/update.html', {'form': form})
 
@@ -469,7 +472,7 @@ def is_superuser(user):
 
 @user_passes_test(is_superuser)
 def view(request):
-    products = Product.objects.count()
+    products = Product.objects.filter(status='approved').count()
     recent_orders = Order.objects.all().order_by('-created_at')[:5]
 
     # Get total number of orders per month and total revenue per month
@@ -530,7 +533,7 @@ def admin_review(request):
             product.save()
             messages.warning(request, f'Product "{product.ProductName}" rejected.')
 
-        return redirect('admin_review')
+        return redirect('view')
     return render(request, 'admin/review.html', {'pending_products': pending_products})
 
 #admin can view the list of customers
@@ -571,3 +574,53 @@ def change_password(request):
         form = PasswordChangeForm(request.user)
     return render(request, 'change_password.html', {'form': form})
 
+
+#admin add category
+def add_category(request):
+    if request.method == 'POST':
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            form.save()
+            # Redirect to a project list view
+            return redirect('view')
+    
+    form = CategoryForm()
+    return render(request,'admin/addcategory.html',{'form': form})
+
+def add_sub_category(request):
+    if request.method == 'POST':
+        form = SubCategoryForm(request.POST)
+        if form.is_valid():
+            form.save()
+            # Redirect to a project list view
+            return redirect('view')
+    
+    form = SubCategoryForm()
+    return render(request,'admin/add_subcategory.html',{'form': form})
+
+def view_all_products(request):
+    products = Product.objects.filter(status='approved')
+    return render(request,'admin/all_products.html',{"products":products})
+
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.conf import settings
+def send_order_confirmation_email(order):
+    subject = 'Order Confirmation'
+    from_email = settings.DEFAULT_FROM_EMAIL
+    to = order.user.email
+
+    order_items = OrderProduct.objects.filter(order=order)
+
+    context = {
+        'user': order.user,
+        'order': order,
+        'order_items': order_items,
+    }
+
+    text_content = f'Thank you for your order, {order.user.username}!\n\nOrder Number: {order.id}\nOrder Date: {order.created_at}\nTotal: ${order.total_amount}'
+    html_content = render_to_string('order_confirmation_email.html', context)
+
+    msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+    msg.attach_alternative(html_content, "text/html")
+    msg.send()
